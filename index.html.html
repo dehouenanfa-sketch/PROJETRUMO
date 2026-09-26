@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CartaRumo | Serviços Online</title>
+<!-- Inclusão do jsPDF e Supabase -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--navy:#0b3a6e;--red:#e30613;--ink:#172033;--muted:#64748b;--bg:#f5f7fa;--line:#dce4ee;--white:#fff;--green:#16845b;--shadow:0 12px 35px rgba(11,58,110,.09)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #8bc5ff;outline-offset:2px}.site-header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}.header-inner{max-width:1180px;margin:auto;padding:16px 24px;display:flex;align-items:center;gap:30px}.brand{display:flex;align-items:center;gap:11px;color:var(--navy);font-weight:900;letter-spacing:.08em;text-decoration:none;white-space:nowrap}.brand-mark{width:42px;height:42px;border-radius:12px;background:var(--navy);display:grid;place-items:center;color:#fff;box-shadow:5px 5px 0 var(--red);overflow:hidden}.brand-mark svg{width:30px;height:30px;display:block}.home-gallery{max-width:1180px;margin:0 auto;padding:28px 24px 0;display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:18px}.home-gallery-card{position:relative;min-height:190px;border-radius:16px;overflow:hidden;background:var(--navy);box-shadow:var(--shadow)}.home-gallery-card img{width:100%;height:100%;display:block;object-fit:cover}.home-gallery-card:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(4,29,60,.86))}.home-gallery-caption{position:absolute;z-index:1;left:18px;right:18px;bottom:16px;color:#fff}.home-gallery-caption strong{display:block;font-size:18px}.home-gallery-caption span{font-size:12px;color:#d8ebff}@media(max-width:760px){.home-gallery{grid-template-columns:1fr;padding:22px 16px 0}.home-gallery-card{min-height:165px}}nav{display:flex;gap:24px;margin-left:auto}nav a{color:var(--ink);font-size:14px;font-weight:700;text-decoration:none}nav a:hover{color:var(--red)}.btn{border:0;border-radius:9px;padding:12px 18px;font-weight:800;transition:.2s}.btn-primary{background:var(--navy);color:#fff}.btn-primary:hover{background:#07294e;transform:translateY(-1px)}.btn-red{background:var(--red);color:#fff}.btn-light{background:#fff;color:var(--navy);border:1px solid var(--line)}.btn-ghost{background:transparent;color:var(--navy);padding-left:0}.menu-btn{display:none;background:none;border:0;color:var(--navy);font-size:25px;margin-left:auto}.hero{position:relative;isolation:isolate;background:linear-gradient(135deg,rgba(5,72,145,.94),rgba(4,48,103,.94)),url('https://globaljuris.pt/storage/app/uploads/public/5fa/18d/e60/5fa18de60bb03496275548.jpg') center/cover;color:#fff;padding:68px 24px 54px;text-align:center;overflow:hidden}.hero-inner{max-width:1180px;margin:auto}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:900;color:#c8e7ff}.hero h1{font-size:clamp(34px,5vw,64px);line-height:1.08;max-width:980px;margin:78px auto 20px;font-weight:900}.hero p{max-width:850px;color:#f0f7ff;font-size:clamp(17px,2vw,22px);margin:0 auto 30px}.hero-actions{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}.hero-actions .btn{min-width:220px;padding:16px 24px}.hero-secondary{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.8)}.hero-secondary:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}.hero-stats{max-width:780px;margin:50px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.hero-stat{padding:20px 12px 0;border-top:1px solid rgba(255,255,255,.38);color:#e3f1ff;font-size:14px}.hero-stat strong{display:block;color:#fff;font-size:28px;margin-bottom:2px}.main{max-width:1180px;margin:0 auto;padding:55px 24px 80px}.section-head{text-align:center;margin-bottom:32px}.section-head h2{font-size:clamp(28px,4vw,40px);margin:0 0 8px;color:var(--navy)}.section-head p{color:var(--muted);margin:0}.service-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.service-card,.form-shell,.success-card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.service-card{padding:34px;position:relative;overflow:hidden}.service-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--red)}.service-number{color:var(--red);font-weight:900;font-size:13px}.service-card h3{color:var(--navy);font-size:25px;margin:12px 0 8px}.service-card p{color:var(--muted);min-height:48px}.service-card .btn{margin-top:18px}.home-only.hidden-home{display:none}.view{display:none;animation:appear .3s ease}.view.active{display:block}@keyframes appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}.form-shell{max-width:1080px;margin:auto;padding:34px}.form-title{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:28px}.form-title h2{margin:0;color:var(--navy);font-size:32px}.form-title p{color:var(--muted);margin:7px 0}.progress{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 34px}.progress-step{text-align:center;color:#8a97a8;font-size:12px;font-weight:800;position:relative}.progress-step:before{content:attr(data-number);display:grid;place-items:center;width:34px;height:34px;margin:0 auto 7px;border:2px solid #cdd7e3;border-radius:50%;background:#fff}.progress-step:not(:last-child):after{content:"";position:absolute;height:2px;background:#dbe3ec;top:16px;left:60%;width:80%}.progress-step.done,.progress-step.current{color:var(--navy)}.progress-step.done:before,.progress-step.current:before{border-color:var(--navy);background:var(--navy);color:#fff}.progress-step.done:before{content:"✓"}.progress-step.done:after{background:var(--navy)}.step{display:none}.step.active{display:block;animation:appear .25s ease}.step h3{color:var(--navy);font-size:23px;margin:0 0 5px}.step-intro{color:var(--muted);margin-top:0}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px}.field{min-width:0}.field.full{grid-column:1/-1}label{display:block;font-weight:800;font-size:13px;margin-bottom:7px}label .optional{font-weight:500;color:var(--muted)}input,select,textarea{width:100%;border:1px solid #cbd6e2;border-radius:8px;padding:12px 13px;background:#fff;color:var(--ink)}input:invalid:not(:placeholder-shown),select.invalid,textarea.invalid{border-color:var(--red)}textarea{min-height:110px;resize:vertical}.error{display:block;min-height:18px;color:var(--red);font-size:12px;margin-top:4px}.hidden{display:none!important}.step-actions{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);margin-top:30px;padding-top:22px}.category-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:22px}.category{border:1px solid var(--line);border-radius:12px;background:#fff;text-align:left;padding:17px 13px;min-height:78px;position:relative;transition:.2s}.category:hover,.category.selected{border-color:var(--navy);box-shadow:0 7px 18px rgba(11,58,110,.12);transform:translateY(-2px)}.category.selected{background:#eef6ff}.category.selected:after{content:"✓";position:absolute;right:9px;top:7px;color:var(--green);font-weight:900}.category strong{display:block;color:var(--navy);font-size:19px}.category small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.choice{border:1px solid var(--line);border-radius:14px;padding:26px;background:#fff;text-align:left;transition:.2s}.choice:hover,.choice.selected{border-color:var(--navy);background:#f1f7ff;transform:translateY(-2px)}.choice strong{display:block;color:var(--navy);font-size:20px}.choice p{color:var(--muted);margin-bottom:0}.upload-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.upload{border:1px dashed #aabbd0;border-radius:12px;padding:18px;background:#fbfdff}.upload-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}.upload-icon{width:36px;height:36px;border-radius:9px;background:#e7f1fc;display:grid;place-items:center;color:var(--navy);font-weight:900}.upload-name{font-weight:800}.upload-info{font-size:12px;color:var(--muted);margin-top:9px;min-height:18px;overflow-wrap:anywhere}.upload input{display:none}.upload label{display:inline-block;color:var(--navy);border:1px solid #b9c9da;padding:9px 12px;border-radius:7px;background:#fff;cursor:pointer}.remove-file{border:0;background:none;color:var(--red);font-size:12px;font-weight:800;margin-left:8px}.school-card{background:#f2f7fc;border:1px solid #d8e6f3;border-radius:12px;padding:19px;margin:20px 0}.school-card h4{margin:0 0 10px;color:var(--navy)}.school-data{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.school-data span{display:block;color:var(--muted);font-size:11px;text-transform:uppercase}.school-data strong{font-size:14px}.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.summary-card{border:1px solid var(--line);border-radius:12px;padding:18px}.summary-card h4{display:flex;justify-content:space-between;align-items:center;color:var(--navy);margin:0 0 12px}.summary-card button{border:0;background:none;color:var(--red);font-size:12px;font-weight:900}.summary-card dl{display:grid;grid-template-columns:130px 1fr;gap:7px;margin:0;font-size:13px}.summary-card dt{color:var(--muted);font-weight:700}.summary-card dd{margin:0;overflow-wrap:anywhere}.checkline{display:flex;gap:10px;align-items:flex-start;margin-top:22px;font-size:14px}.checkline input{width:auto;margin-top:4px}.success-card{max-width:650px;margin:35px auto;padding:48px;text-align:center}.success-icon{width:72px;height:72px;border-radius:50%;background:#dff6eb;color:var(--green);display:grid;place-items:center;font-size:38px;font-weight:900;margin:0 auto 20px}.success-card h2{color:var(--navy);margin:0;font-size:32px}.auth-shell{max-width:560px}.auth-tabs{display:flex;gap:10px;margin-bottom:22px}#authView{display:none}#authView.active{display:block}.auth-tabs .btn{flex:1}.orders-panel{margin-top:30px;border-top:1px solid var(--line);padding-top:24px}.orders-panel h3{color:var(--navy)}.order-item{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px;font-size:13px}.order-item span{display:block;color:var(--muted);font-size:11px}.order-actions{display:flex;gap:8px;flex-wrap:wrap}.order-actions button{border:0;background:none;color:var(--red);font-weight:800;font-size:12px}.success-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}@media(max-width:760px){.order-item{grid-template-columns:1fr}.auth-tabs{flex-direction:column}}@media(max-width:760px){.footer-legal{margin-top:22px}.footer-legal p{font-size:11px}}.success-card p{color:var(--muted)}.protocol{font-size:26px;letter-spacing:.06em;color:var(--navy);font-weight:900;background:#f1f6fb;border:1px solid #dbe7f2;border-radius:10px;padding:14px;margin:25px 0 8px}.success-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin:22px 0}.success-meta div{border:1px solid var(--line);border-radius:9px;padding:12px}.success-meta span{display:block;color:var(--muted);font-size:11px}.success-meta strong{font-size:14px}.footer{background:#0a294a;color:#d6e4f2;padding:38px 24px}.footer-inner{max-width:1180px;margin:auto;display:flex;justify-content:space-between;gap:20px}.footer strong{color:#fff;font-size:18px}.footer p{margin:6px 0;font-size:13px}.footer a{color:#fff;margin-left:18px;font-size:13px}.footer-legal{max-width:1180px;margin:26px auto 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.2);font-size:12px;color:#b9cde0}.footer-legal strong{font-size:13px}.footer-legal p{max-width:760px}.footer-legal a{margin-left:0;color:#dcecff}.info-section{max-width:1180px;margin:0 auto;padding:30px 24px 55px}.info-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.info-grid article{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:var(--shadow)}.info-grid strong{color:var(--red);font-size:13px}.info-grid h3{color:var(--navy);font-size:18px;margin:9px 0 6px}.info-grid p,.faq-list p{color:var(--muted);margin:0;font-size:14px}.faq-list{max-width:850px;margin:auto}.faq-list details{background:#fff;border:1px solid var(--line);border-radius:10px;margin:10px 0;padding:16px 18px}.faq-list summary{cursor:pointer;color:var(--navy);font-weight:800}.faq-list details p{padding-top:12px}.nav-auth{padding:8px 13px;margin-left:4px}
+@media(max-width:760px){.info-section{padding:25px 16px 40px}.info-grid{grid-template-columns:1fr 1fr}.hero h1{margin-top:48px}.hero-actions{flex-direction:column;align-items:stretch}.hero-actions .btn{width:100%}.hero-stats{grid-template-columns:1fr;gap:12px;margin-top:34px}.hero-stat{padding-top:14px}.header-inner{padding:13px 18px}.menu-btn{display:block}nav{display:none;position:absolute;top:68px;left:0;right:0;background:#fff;padding:18px 24px;border-bottom:1px solid var(--line);flex-direction:column;gap:15px}nav.open{display:flex}.header-inner>.btn{display:none}.nav-auth{margin:0;text-align:left}.hero{padding:50px 20px}.main{padding:38px 16px 60px}.service-grid,.choice-grid,.upload-grid,.summary-grid,.fields{grid-template-columns:1fr}.form-shell{padding:22px 17px;border-radius:13px}.form-title{display:block}.form-title h2{font-size:26px}.field.full{grid-column:auto}.category-grid{grid-template-columns:repeat(3,1fr);gap:9px}.category{padding:13px 9px;min-height:70px}.category strong{font-size:17px}.progress{gap:2px}.progress-step{font-size:9px}.progress-step:after{width:70%;left:65%}.progress-step:before{width:29px;height:29px;font-size:11px}.progress-step:not(:last-child):after{top:14px}.school-data{grid-template-columns:1fr}.step-actions{flex-direction:column-reverse}.step-actions .btn{width:100%}.success-card{padding:34px 20px}.success-meta{grid-template-columns:1fr}.footer-inner{display:block}.footer-links{margin-top:18px}.footer a{margin:0 18px 0 0}}.modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(8,25,45,.68);display:grid;place-items:center;padding:18px}.modal-card{width:min(620px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,.25)}.modal-card h2{margin:0 0 18px;color:var(--navy)}.modal-summary{display:grid;grid-template-columns:140px 1fr;gap:10px 14px;margin:0}.modal-summary dt{font-weight:800;color:var(--muted)}.modal-summary dd{margin:0;overflow-wrap:anywhere}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:24px;flex-wrap:wrap}#licenseView,#examView{display:none!important}@media(max-width:520px){.modal-card{padding:21px 17px}.modal-summary{grid-template-columns:1fr;gap:4px}.modal-summary dd{margin-bottom:8px}.modal-actions{flex-direction:column-reverse}.modal-actions .btn{width:100%}}
+.status-pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:800;background:#e8eef5;color:#334155}.status-pill[data-status="Pedido recebido"]{background:#e7f1fc;color:#0b3a6e}.status-pill[data-status="Em análise"],.status-pill[data-status="Em processamento"]{background:#fff3cd;color:#795600}.status-pill[data-status="Informações necessárias"]{background:#fff0f0;color:#a4121a}.status-pill[data-status="Concluído"]{background:#dff6eb;color:#126746}.order-item .status-pill{display:inline-flex;width:max-content;font-size:12px;margin-top:4px}.draft-note{color:var(--muted);font-size:13px}.draft-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0}.success-status{margin:18px 0}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="header-inner"><a class="brand" href="#inicio" aria-label="Ir para o início"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" role="img"><path d="M6 22.5 12.5 9h7L26 22.5h-4.2l-1.5-3H11.7l-1.5 3H6Zm7.3-6.2h5.4L16 11l-2.7 5.3Z" fill="currentColor"/><path d="M7 25h18" stroke="#e30613" stroke-width="2.8" stroke-linecap="round"/></svg></span><span data-school-name>CartaRumo</span></a><button class="menu-btn" id="menuBtn" aria-label="Abrir menu">☰</button><nav id="mainNav"><a href="#servicos">Serviços</a><a href="#como-funciona">Como funciona</a><a href="#faq">Perguntas frequentes</a><a href="#contactos">Contactos</a><button class="btn btn-light nav-auth" id="authNavBtn" onclick="openAuth()">Inscrever-se / Iniciar sessão</button></nav></div></header>
+
+<section class="hero home-only" id="inicio">
+    <div class="hero-inner">
+        <span class="eyebrow">Serviços Online</span>
+        <h1>A sua carta de condução começa aqui</h1>
+        <p>Aprenda a conduzir com confiança e tenha apoio em cada etapa, desde a escolha da formação ao acompanhamento do seu pedido.</p>
+        <div class="hero-actions">
+            <button class="btn btn-red" onclick="openAuth()">Iniciar sessão ou criar conta</button>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat"><strong>4 passos</strong><span>para começar sem complicações</span></div>
+            <div class="hero-stat"><strong>Acompanhamento</strong><span>consulte o estado do seu pedido</span></div>
+            <div class="hero-stat"><strong>Atendimento</strong><span>apoio em cada etapa</span></div>
+        </div>
+    </div>
+</section>
+
+<section class="home-gallery home-only" aria-label="Imagens de aulas de condução">
+    <article class="home-gallery-card"><img src="https://img.moto.pt/uC352errk2v3fzuHQ877rw-1070.webp" alt="Instrutor a acompanhar uma aula de condução" loading="lazy" decoding="async"><div class="home-gallery-caption"><strong>Aulas práticas</strong><span>Aprenda a conduzir com confiança</span></div></article>
+    <article class="home-gallery-card"><img src="https://www.francaisaletranger.fr/wp-content/uploads/2024/01/Permis-dans-le-monde.jpg" alt="Automóvel utilizado numa aula de condução" loading="lazy" decoding="async"><div class="home-gallery-caption"><strong>Formação ao volante</strong><span>Pratique com acompanhamento</span></div></article>
+    <article class="home-gallery-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJqKZHu7bwZv08U4Rs024afFi6flbCmqYa0yEehfcdP5x3XWW2A_XdanM&amp;s=10" alt="Aluno a conduzir durante uma aula"><div class="home-gallery-caption"><strong>Prepare o exame</strong><span>Avance ao seu ritmo</span></div></article>
+    <article class="home-gallery-card"><img src="https://prp.pt/wp-content/uploads/2025/10/Renovar-Revalidar-Carta-de-Conducao.png" alt="Pedido de renovação da carta de condução" loading="lazy" decoding="async"><div class="home-gallery-caption"><strong>Faça o seu pedido de carta de condução</strong><span>Atendimento rápido, custo fiável e serviço eficaz</span></div></article>
+</section>
+
+<main class="main">
+<!-- ECRÃ DE AUTENTICAÇÃO / REGISTO -->
+<section id="authView" class="view">
+    <div class="form-shell auth-shell">
+        <div class="form-title">
+            <div>
+                <h2>Criar conta ou iniciar sessão</h2>
+                <p>Aceda à sua área pessoal para iniciar ou acompanhar os seus pedidos.</p>
+            </div>
+        </div>
+        <div class="auth-tabs">
+            <button class="btn btn-primary" id="loginTab" onclick="setAuthMode('login')">Iniciar sessão</button>
+            <button class="btn btn-light" id="registerTab" onclick="setAuthMode('register')">Criar conta</button>
+        </div>
+        <form id="authForm" novalidate>
+            <div class="field hidden" id="authNameWrap">
+                <label for="authName">Nome *</label>
+                <input id="authName">
+                <span class="error"></span>
+            </div>
+            <div class="field">
+                <label for="authEmail">E-mail *</label>
+                <input id="authEmail" type="email" required>
+                <span class="error"></span>
+            </div>
+            <div class="field">
+                <label for="authPassword">Palavra-passe *</label>
+                <input id="authPassword" type="password" minlength="6" required autocomplete="current-password">
+                <span class="error"></span>
+            </div>
+            <div class="field hidden" id="authPasswordConfirmWrap">
+                <label for="authPasswordConfirm">Confirmar palavra-passe *</label>
+                <input id="authPasswordConfirm" type="password" minlength="6" autocomplete="new-password">
+                <span class="error"></span>
+            </div>
+            <label class="checkline hidden" id="authPrivacyWrap">
+                <input id="authPrivacy" type="checkbox"> 
+                <span>Li e aceito a política de privacidade.</span>
+            </label>
+            <span class="error" id="authError" aria-live="polite"></span>
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:15px;">Continuar</button>
+            <button type="button" class="btn btn-ghost" id="forgotPasswordBtn" onclick="resetPassword()" style="margin-top:10px;">Esqueci-me da palavra-passe</button>
+        </form>
+        <button class="btn btn-ghost" onclick="showServices()" style="margin-top:15px;">← Voltar ao início</button>
+    </div>
+</section>
+
+<section id="personalView" class="view"><div class="form-shell"><div class="form-title"><div><span class="eyebrow">Área reservada</span><h2>Área pessoal</h2><p>Bem-vindo à CartaRumo</p><p>Escolha a diligência que pretende realizar.</p></div><div class="success-actions"><button class="btn btn-light" onclick="showServices()">Página inicial</button><button class="btn btn-light" onclick="logout()">Terminar sessão</button></div></div><div class="service-grid"><article class="service-card"><span class="service-number">01 / FORMAÇÃO</span><h3>Inscrição - Aulas de Condução</h3><p>Escolha a sua fórmula de formação e indique os seus contactos.</p><button class="btn btn-primary" onclick="startFlow('A')">Iniciar pedido</button></article><article class="service-card"><span class="service-number">02 / DILIGÊNCIAS</span><h3>Diligências &amp; Carta de Condução</h3><p>Solicite a obtenção, renovação ou substituição da carta.</p><button class="btn btn-primary" onclick="startFlow('B')">Iniciar pedido</button></article></div><div class="orders-panel"><h3>Os meus pedidos</h3><div id="ordersList"></div></div></div></section>
+<section id="servicesView" class="view"><div class="section-head" id="servicos"><span class="eyebrow">Atendimento digital</span><h2>Nossos Serviços Online</h2><p>Escolha o procedimento que pretende iniciar.</p></div><div class="service-grid"><article class="service-card"><span class="service-number">OPÇÃO 1</span><h3>Inscrição - Aulas de Condução</h3><p>Escolha a sua fórmula de formação e indique os seus contactos.</p><button class="btn btn-primary" onclick="startFlow('A')">Iniciar pedido</button></article><article class="service-card"><span class="service-number">OPÇÃO 2</span><h3>Diligências &amp; Carta de Condução</h3><p>Solicite a obtenção, renovação ou substituição da carta.</p><button class="btn btn-primary" onclick="startFlow('B')">Iniciar pedido</button></article></div></section>
+
+<!-- OPÇÃO 1 (formulário complexo) -->
+<section id="licenseView" class="view"><div class="form-shell"><div class="form-title"><div><button class="btn btn-ghost" onclick="showPersonalArea()">← Voltar à área pessoal</button><h2>Pedido de Licença de Aprendizagem</h2><p>Preencha os dados abaixo para iniciar o seu pedido.</p></div></div><div class="progress" id="licenseProgress"></div><form id="licenseForm" novalidate>
+<div class="step" data-step="1"><h3>Dados pessoais</h3><p class="step-intro">Introduza os seus dados de identificação.</p><div class="fields"><div class="field"><label for="lNome">Nome *</label><input id="lNome" required><span class="error"></span></div><div class="field"><label for="lApelido">Apelido *</label><input id="lApelido" required><span class="error"></span></div><div class="field"><label for="lNascimento">Data de nascimento *</label><input id="lNascimento" type="date" required><span class="error"></span></div><div class="field"><label for="lNaturalidade">Naturalidade *</label><input id="lNaturalidade" required><span class="error"></span></div><div class="field"><label for="lNacionalidade">Nacionalidade *</label><select id="lNacionalidade" required><option value="">Selecionar</option><option>Portuguesa</option><option>Brasileira</option><option>Cabo-verdiana</option><option>Angolana</option><option>Moçambicana</option><option>Guineense</option><option>São-tomense</option><option>Outra</option></select><span class="error"></span></div><div class="field hidden" id="lOutraWrap"><label for="lOutra">Indique a nacionalidade *</label><input id="lOutra"><span class="error"></span></div><div class="field"><label for="lNif">NIF *</label><input id="lNif" inputmode="numeric" maxlength="9" required><span class="error"></span></div><div class="field"><label for="lDocTipo">Documento de identificação *</label><select id="lDocTipo" required><option value="">Selecionar</option><option>Cartão de Cidadão</option><option>Passaporte</option><option>Título de Residência</option><option>Outro</option></select><span class="error"></span></div><div class="field"><label for="lDocNumero">Número do documento *</label><input id="lDocNumero" required><span class="error"></span></div><div class="field"><label for="lDocEmissao">Data de emissão <span class="optional">(opcional)</span></label><input id="lDocEmissao" type="date"></div><div class="field"><label for="lDocValidade">Data de validade <span class="optional">(opcional)</span></label><input id="lDocValidade" type="date"></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="showServices()">← Voltar</button><button type="button" class="btn btn-primary" onclick="next('license')">Continuar →</button></div></div>
+<div class="step" data-step="2"><h3>Morada e contactos</h3><div class="fields"><div class="field full"><label for="lMorada">Morada *</label><input id="lMorada" required><span class="error"></span></div><div class="field"><label for="lLocalidade">Localidade *</label><input id="lLocalidade" required><span class="error"></span></div><div class="field"><label for="lPostal">Código Postal *</label><input id="lPostal" placeholder="0000-000" required><span class="error"></span></div><div class="field"><label for="lConcelho">Concelho</label><input id="lConcelho"></div><div class="field"><label for="lDistrito">Distrito</label><select id="lDistrito"><option value="">Selecionar</option><option>Aveiro</option><option>Beja</option><option>Braga</option><option>Bragança</option><option>Castelo Branco</option><option>Coimbra</option><option>Évora</option><option>Faro</option><option>Guarda</option><option>Leiria</option><option>Lisboa</option><option>Portalegre</option><option>Porto</option><option>Santarém</option><option>Setúbal</option><option>Viana do Castelo</option><option>Vila Real</option><option>Viseu</option></select></div><div class="field"><label for="lPais">País</label><input id="lPais" value="Portugal"></div><div class="field"><label for="lEmail">E-mail *</label><input id="lEmail" type="email" required><span class="error"></span></div><div class="field"><label for="lTelemovel">Telemóvel *</label><input id="lTelemovel" type="tel" required><span class="error"></span></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prev('license')">← Voltar</button><button type="button" class="btn btn-primary" onclick="next('license')">Continuar →</button></div></div>
+<div class="step" data-step="3"><h3>Categoria pretendida</h3><p class="step-intro">Selecione a categoria de condução pretendida.</p><div class="category-grid" id="licenseCategories"></div><span class="error" id="licenseCategoryError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prev('license')">← Voltar</button><button type="button" class="btn btn-primary" onclick="next('license')">Continuar →</button></div></div>
+<div class="step" data-step="4"><h3>Documentos</h3><p class="step-intro">Anexe os documentos necessários ao seu pedido.</p><div class="upload-grid" id="licenseUploads"></div><p class="step-intro">Formatos aceites: PDF, JPG, JPEG e PNG · Tamanho máximo: 10 MB</p><span class="error" id="licenseFileError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prev('license')">← Voltar</button><button type="button" class="btn btn-primary" onclick="next('license')">Continuar →</button></div></div>
+<div class="step" data-step="5"><h3>Confirme os seus dados</h3><p class="step-intro">Reveja a informação antes de enviar o pedido.</p><div class="summary-grid" id="licenseSummary"></div><label class="checkline"><input id="licenseConfirm" type="checkbox"> <span>Confirmo que os dados introduzidos estão corretos.</span></label><span class="error" id="licenseConfirmError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prev('license')">← Voltar</button><button type="button" class="btn btn-red" onclick="submitFlow('license')">Enviar pedido</button></div></div></form></div></section>
+
+<!-- OPÇÃO 2 (formulário complexo) -->
+<section id="examView" class="view"><div class="form-shell"><div class="form-title"><div><button class="btn btn-ghost" onclick="showPersonalArea()">← Voltar à área pessoal</button><h2>Pedido de Exame de Condução</h2><p>Solicite a marcação da sua prova teórica ou prática.</p></div></div><div class="progress" id="examProgress"></div><form id="examForm" novalidate>
+<div class="step" data-step="1"><h3>Tipo de exame</h3><p class="step-intro">Escolha o tipo de prova que pretende realizar.</p><div class="choice-grid"><button type="button" class="choice" data-exam="Prova Teórica"><strong>Prova Teórica</strong><p>Prova destinada à avaliação dos conhecimentos teóricos.</p></button><button type="button" class="choice" data-exam="Prova Prática"><strong>Prova Prática</strong><p>Prova destinada à avaliação das competências de condução.</p></button></div><span class="error" id="examTypeError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="showServices()">← Voltar</button><button type="button" class="btn btn-primary" onclick="next('exam')">Continuar →</button></div></div>
+<div class="step" data-step="2"><h3>Categoria</h3><p class="step-intro">Selecione a categoria para a qual pretende realizar o exame.</p><div class="category-grid" id="examCategories"></div><span class="error" id="examCategoryError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prev('exam')">← Voltar</button><button type="button" class="btn btn-primary" onclick="next('exam')">Continuar →</button></div></div>
+<div class="step" data-step="3"><h3>Identificação do candidato</h3><div class="fields"><div class="field"><label for="eNome">Nome *</label><input id="eNome" required><span class="error"></span></div><div class="field"><label for="eApelido">Apelido *</label><input id="eApelido" required><span class="error"></span></div><div class="field"><label for="eNascimento">Data de nascimento *</label><input id="eNascimento" type="date" required><span class="error"></span></div><div class="field"><label for="eNacionalidade">Nacionalidade *</label><input id="eNacionalidade" required><span class="error"></span></div><div class="field"><label for="eNif">NIF *</label><input id="eNif" inputmode="numeric" maxlength="9" required><span class="error"></span></div><div class="field"><label for="eDocTipo">Documento de identificação *</label><select id="eDocTipo" required><option value="">Selecionar</option><option>Cartão de Cidadão</option><option>Passaporte</option><option>Título de Residência</option><option>Outro</option></select><span class="error"></span></div><div class="field"><label for="eDocNumero">Número do documento *</label><input id="eDocNumero" required><span class="error"></span></div><div class="field"><label for="eDocEmissao">Data de emissão</label><input id="eDocEmissao" type="date"></div><div class="field"><label for="eNaturalidade">Naturalidade</label><input id="eNaturalidade"><small class="step-intro">Localidade ou região de origem.</small></div><div class="field full"><label for="eMorada">Morada *</label><input id="eMorada" required><span class="error"></span></div><div class="field"><label for="eLocalidade">Localidade *</label><input id="eLocalidade" required><span class="error"></span></div><div class="field"><label for="ePostal">Código Postal *</label><input id="ePostal" placeholder="0000-000" required><span class="error"></span></div><div class="field"><label for="eEmail">E-mail *</label><input id="eEmail" type="email" required><span class="error"></span></div><div class="field"><label for="eTelemovel">Telemóvel *</label><input id="eTelemovel" type="tel" required><span class="error"></span></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prev('exam')">← Voltar</button><button type="button" class="btn btn-primary" onclick="next('exam')">Continuar →</button></div></div>
+<div class="step" data-step="4"><h3>Dados do exame</h3><div class="fields"><div class="field"><label for="eDocumento">Documento atual *</label><select id="eDocumento" required><option value="">Selecionar</option><option>Licença de Aprendizagem</option><option>Licença de Condução</option><option>Carta de Condução</option></select><span class="error"></span></div><div class="field"><label for="eEmissor">Emissor *</label><input id="eEmissor" required><span class="error"></span></div><div class="field full"><label for="eCentro">Centro de Exames pretendido *</label><select id="eCentro" required><option value="">Selecionar centro</option><option>Centro de Exames 01</option><option>Centro de Exames 02</option><option>Centro de Exames 03</option><option>Centro de Exames 04</option></select><span class="error"></span></div></div><div class="school-card"><h4>Escola de condução</h4><div class="school-data"><div><span>Nome da escola</span><strong data-school-name>CartaRumo</strong></div><div><span>Localidade</span><strong data-school-location>Lisboa</strong></div><div><span>Alvará</span><strong data-school-license>0000</strong></div></div></div><div class="field"><label for="eObservacoes">Observações <span class="optional">(opcional)</span></label><textarea id="eObservacoes"></textarea></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prev('exam')">← Voltar</button><button type="button" class="btn btn-primary" onclick="next('exam')">Continuar →</button></div></div>
+<div class="step" data-step="5"><h3>Confirme o pedido</h3><p class="step-intro">Reveja todos os dados antes de enviar.</p><div class="summary-grid" id="examSummary"></div><label class="checkline"><input id="examConfirm" type="checkbox"> <span>Confirmo que os dados introduzidos estão corretos.</span></label><span class="error" id="examConfirmError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prev('exam')">← Voltar</button><button type="button" class="btn btn-red" onclick="submitFlow('exam')">Enviar pedido</button></div></div></form></div></section>
+
+<section id="enrollView" class="view"><div class="form-shell"><div class="form-title"><div><button class="btn btn-ghost" onclick="showPersonalArea()">← Voltar à área pessoal</button><span class="eyebrow">Opção 1</span><h2>Inscrição - Aulas de Condução</h2><p>Preencha o pedido por etapas. Os seus dados são guardados como rascunho neste navegador.</p></div></div><div class="progress" id="enrollProgress"></div><form id="enrollForm" novalidate>
+<div class="step" data-step="1"><h3>Dados pessoais</h3><p class="step-intro">Indique os dados do candidato.</p><div class="fields"><div class="field full"><label for="aName">Nome completo *</label><input id="aName" type="text" maxlength="150" autocomplete="name" required><span class="error"></span></div><div class="field"><label for="aBirth">Data de nascimento *</label><input id="aBirth" type="date" required><span class="error"></span></div><div class="field"><label for="aNationality">Nacionalidade *</label><input id="aNationality" maxlength="60" required><span class="error"></span></div><div class="field"><label for="aNif">NIF <span class="optional">(opcional)</span></label><input id="aNif" inputmode="numeric" maxlength="9"><span class="error"></span></div><div class="field"><label for="aDocument">Documento de identificação *</label><select id="aDocument" required><option value="">Selecione</option><option>Cartão de Cidadão</option><option>Passaporte</option><option>Título de Residência</option><option>Outro</option></select><span class="error"></span></div><div class="field"><label for="aDocumentNumber">Número do documento *</label><input id="aDocumentNumber" maxlength="40" required><span class="error"></span></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="showPersonalArea()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextEnrollStep()">Seguinte →</button></div></div>
+<div class="step" data-step="2"><h3>Contactos e morada</h3><p class="step-intro">Utilizaremos estes dados para acompanhar a sua inscrição.</p><div class="fields"><div class="field"><label for="aEmail">Endereço de e-mail *</label><input id="aEmail" type="email" maxlength="254" autocomplete="email" required><span class="error"></span></div><div class="field"><label for="aPhone">Número de telefone *</label><input id="aPhone" type="tel" maxlength="30" pattern="[+0-9][0-9 () .-]{7,29}" autocomplete="tel" required><span class="error"></span></div><div class="field full"><label for="aAddress">Morada completa *</label><input id="aAddress" maxlength="220" autocomplete="street-address" required><span class="error"></span></div><div class="field"><label for="aPostal">Código postal *</label><input id="aPostal" placeholder="0000-000" maxlength="8" required><span class="error"></span></div><div class="field"><label for="aCity">Cidade *</label><select id="aCity" required><option value="">Selecione a cidade</option><option>Lisboa</option><option>Porto</option><option>Braga</option><option>Coimbra</option><option>Outra</option></select><span class="error"></span></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevEnrollStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextEnrollStep()">Seguinte →</button></div></div>
+<div class="step" data-step="3"><h3>Formação pretendida</h3><p class="step-intro">Escolha a formação e indique as suas preferências.</p><div class="fields"><div class="field full"><label for="aFormula">Fórmula escolhida *</label><select id="aFormula" required><option value="">Selecione uma fórmula</option><option>Formação Código + Condução padrão</option><option>Pack Condução intensivo</option><option>Formação personalizada</option></select><span class="error"></span></div><div class="field"><label for="aCategory">Categoria pretendida *</label><select id="aCategory" required><option value="">Selecione a categoria</option><option>B — Automóveis ligeiros</option><option>A1 — Motociclos até 125 cm³</option><option>A2 — Motociclos de potência limitada</option><option>A — Motociclos</option><option>BE — Automóveis com reboque</option></select><span class="error"></span></div><div class="field"><label for="aSchedule">Horário preferencial <span class="optional">(opcional)</span></label><select id="aSchedule"><option value="">Sem preferência</option><option>Manhã</option><option>Tarde</option><option>Noite</option><option>Fim de semana</option></select></div><div class="field full"><label for="aNotes">Observações ou necessidades especiais <span class="optional">(opcional)</span></label><textarea id="aNotes" maxlength="1000" placeholder="Indique qualquer informação útil para a escola."></textarea></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevEnrollStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextEnrollStep()">Seguinte →</button></div></div>
+<div class="step" data-step="4"><h3>Récapitulatif</h3><p class="step-intro">Reveja todos os dados antes de continuar para os termos.</p><div class="summary-grid" id="enrollSummary"></div><div class="draft-actions"><span id="draftStatusA" class="draft-note" aria-live="polite"></span><button type="button" id="clearDraftA" class="btn btn-ghost hidden" onclick="clearDraft('A')">Apagar rascunho</button></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevEnrollStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="beginRequest('A')">Continuar para os Termos →</button></div></div></form></div></section>
+
+<section id="diligenceView" class="view"><div class="form-shell"><div class="form-title"><div><button class="btn btn-ghost" onclick="showPersonalArea()">← Voltar à área pessoal</button><span class="eyebrow">Opção 2</span><h2>Diligências &amp; Carta de Condução</h2><p>Preencha os seus dados para iniciar o pedido.</p></div></div><form id="diligenceForm" class="fields" novalidate><div class="field full"><label for="bName">Nome Completo *</label><input id="bName" type="text" maxlength="150" autocomplete="name" placeholder="Ex: Maria Santos" required><span class="error"></span></div><div class="field"><label for="bEmail">Endereço de E-mail *</label><input id="bEmail" type="email" maxlength="254" autocomplete="email" placeholder="Ex: maria.santos@email.pt" required><span class="error"></span></div><div class="field"><label for="bPhone">Número de Telefone *</label><input id="bPhone" type="tel" maxlength="30" autocomplete="tel" pattern="[+0-9][0-9 () .-]{7,29}" placeholder="Ex: +351 912 345 678" required><span class="error"></span></div><div class="field"><label for="bCity">Cidade *</label><select id="bCity" required><option value="" disabled selected>Selecione a cidade</option><option>Lisboa</option><option>Porto</option><option>Braga</option><option>Coimbra</option><option>Outra</option></select><span class="error"></span></div><div class="field"><label for="bReason">Motivo do Pedido *</label><select id="bReason" required><option value="" disabled selected>Selecione o motivo</option><option>Obtenção de carta</option><option>Renovação periódica</option><option>Substituição por extravio</option></select><span class="error"></span></div><div class="field full"><div class="draft-actions"><span id="draftStatusB" class="draft-note" aria-live="polite"></span><button type="button" id="clearDraftB" class="btn btn-ghost hidden" onclick="clearDraft('B')">Apagar rascunho</button></div><button type="button" class="btn btn-primary" onclick="beginRequest('B')">Continuar para os Termos</button></div></form></div></section>
+
+<section id="termsView" class="view"><div class="form-shell auth-shell"><div class="form-title"><div><span class="eyebrow">Etapa comum</span><h2>Termos e Condições</h2></div></div><ol><li>O candidato compromete-se a fornecer informações exatas e válidas.</li><li>Todos os dados recolhidos servem estritamente para o processamento administrativo do pedido.</li></ol><label class="checkline"><input id="termsAccepted" type="checkbox" required><span>Li e aceito os termos descritos.</span></label><span class="error" id="termsError" aria-live="polite"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="returnToRequest()">← Corrigir formulário</button><button type="button" id="reviewRequestBtn" class="btn btn-primary" onclick="reviewRequest()">Rever e continuar</button></div></div></section>
+
+<div id="confirmModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle"><div class="modal-card"><h2 id="confirmTitle">Confirmar dados</h2><dl id="confirmSummary" class="modal-summary"></dl><span class="error" id="confirmError" aria-live="polite"></span><div class="modal-actions"><button type="button" class="btn btn-light" onclick="closeConfirmModal()">Corrigir</button><button type="button" id="confirmSubmitBtn" class="btn btn-primary" onclick="confirmRequest()">Confirmar e descarregar PDF</button></div></div></div>
+
+<section id="successView" class="view"><div class="success-card"><div class="success-icon">✓</div><h2>Pedido enviado com sucesso</h2><p>O seu pedido foi registado com sucesso.</p><div class="protocol" id="successProtocol"></div><span>Número do pedido</span><div class="success-meta"><div><span>Data do pedido</span><strong id="successDate"></strong></div><div><span>Serviço</span><strong id="successService"></strong></div><div><span>Estado</span><strong id="successStatus" class="status-pill" data-status="Pedido recebido">Pedido recebido</strong></div></div><span id="receiptNotice" class="error" aria-live="polite"></span><div class="success-actions"><button class="btn btn-primary" onclick="downloadReceipt()">Descarregar PDF oficial</button><button class="btn btn-light" onclick="printReceipt()">Imprimir</button><button class="btn btn-light" onclick="showServices()">Voltar à página inicial</button><button class="btn btn-light" onclick="showPersonalArea()">Voltar ao painel de controlo</button><button class="btn btn-light" onclick="newRequest()">Novo pedido</button></div></div></section>
+</main>
+
+<section class="info-section home-only" id="como-funciona"><div class="section-head"><span class="eyebrow">Processo simples</span><h2>Como funciona</h2><p>Trate do seu pedido em poucos passos.</p></div><div class="info-grid"><article><strong>01</strong><h3>Crie a sua conta</h3><p>Registe-se para iniciar pedidos e acompanhar o seu processo.</p></article><article><strong>02</strong><h3>Preencha os dados</h3><p>Complete o formulário com informação clara e atualizada.</p></article><article><strong>03</strong><h3>Envie os documentos</h3><p>Junte os ficheiros solicitados em PDF, JPG ou PNG.</p></article><article><strong>04</strong><h3>Acompanhe o pedido</h3><p>Consulte o estado e descarregue o comprovativo na sua área pessoal.</p></article></div></section><section class="info-section home-only" id="faq"><div class="section-head"><span class="eyebrow">Ajuda</span><h2>Perguntas frequentes</h2></div><div class="faq-list"><details><summary>Que documentos devo preparar?</summary><p>A lista de documentos é apresentada durante o pedido. Tenha consigo um documento de identificação e os comprovativos solicitados.</p></details><details><summary>Que formatos são aceites?</summary><p>São aceites ficheiros PDF, JPG, JPEG e PNG, até 10 MB por ficheiro.</p></details><details><summary>Posso acompanhar o meu pedido?</summary><p>Sim. Depois de iniciar sessão, encontrará todos os pedidos e respetivo estado na sua área pessoal.</p></details></div></section>
+
+<!-- RODAPÉ COM E-MAIL DE SUPORTE -->
+<footer class="footer" id="contactos">
+    <div class="footer-inner">
+        <div>
+            <strong data-school-name>CartaRumo</strong>
+            <p>Formação de condutores com confiança e segurança.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#contactos">Contactos</a>
+            <p>E-mail de apoio: <a href="mailto:cartarumo@gmail.com">cartarumo@gmail.com</a></p>
+            <p>© 2026 <span data-school-name>CartaRumo</span>. Todos os direitos reservados.</p>
+        </div>
+    </div>
+    <div class="footer-legal">
+        <strong>Privacidade e proteção de dados</strong>
+        <a href="#contactos">Contacte-nos para obter informações sobre os seus direitos ao abrigo do RGPD.</a>
+    </div>
+</footer>
+
+<script>
+const SUPABASE_URL='https://udkvpoiwpijlpsppblod.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_mEkusZtuM-52z9fsTbioRA__ETnhpH8';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+
+const schoolName="CartaRumo";
+const schoolLocation="Lisboa";
+const schoolLicense="0000";
+
+const categories={A1:"Motociclos de cilindrada até 125 cm³",A2:"Motociclos de potência limitada",A:"Motociclos",B:"Automóveis ligeiros",BE:"Automóveis ligeiros com reboque",C1:"",C:"",C1E:"",CE:"",D1:"",D:"",D1E:"",DE:""};
+const categoryList=Object.keys(categories).filter(c=>categories[c]);
+const state={license:{step:1,category:"",files:{}},exam:{step:1,type:"",category:""}};
+let activeFlow="";let authMode="login";let currentUser=null;let lastSubmission=null;let enrollStep=1;
+let requestedFlow=['A','B'].includes(sessionStorage.getItem('requestedFlow'))?sessionStorage.getItem('requestedFlow'):null;
+
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+
+document.querySelectorAll('[data-school-name]').forEach(e=>e.textContent=schoolName);
+document.querySelectorAll('[data-school-location]').forEach(e=>e.textContent=schoolLocation);
+document.querySelectorAll('[data-school-license]').forEach(e=>e.textContent=schoolLicense);
+
+async function getOrders(){
+    if(!currentUser)return[];
+    const {data,error}=await supabaseClient
+        .from('requests')
+        .select('*')
+        .eq('user_id',currentUser.id)
+        .order('created_at',{ascending:false});
+    if(error){
+        console.error('Erro ao carregar pedidos:',error.message);
+        return[];
+    }
+    return data.map(item=>({
+        protocol:item.protocol,
+        date:item.date ? new Date(item.date).toLocaleString('pt-PT') : new Date(item.created_at).toLocaleString('pt-PT'),
+        service:item.service_type,
+        status:item.status||'Pedido recebido',
+        email:item.email||currentUser.email,
+        nom:item.nom||'',
+        contact:item.contact||'',
+        city:item.city||'',
+        type:item.type||item.service_type||'',
+        info:item.info||''
+    }));
+}
+
+function updateAuthNav(){const button=$('authNavBtn');if(!button)return;button.textContent=currentUser?'Terminar sessão':'Inscrever-se / Iniciar sessão';button.onclick=currentUser?logout:openAuth}
+function openAuth(){currentUser?showPersonalArea():(setAuthMode('login'),hideViews(),$('authView').classList.add('active'),window.scrollTo(0,0))}
+function setAuthMode(mode){authMode=mode;$('authNameWrap').classList.toggle('hidden',mode!=='register');$('authPasswordConfirmWrap').classList.toggle('hidden',mode!=='register');$('authPrivacyWrap').classList.toggle('hidden',mode!=='register');$('authName').required=mode==='register';$('authPasswordConfirm').required=mode==='register';$('loginTab').className='btn '+(mode==='login'?'btn-primary':'btn-light');$('registerTab').className='btn '+(mode==='register'?'btn-primary':'btn-light');$('authError').textContent=''}
+function showPersonalArea(){if(!currentUser){openAuth();return}hideViews();$('personalView').classList.add('active');renderOrders();window.scrollTo(0,0)}
+function showServices(){hideViews();showHomeContent();$('servicesView').classList.add('active');window.scrollTo(0,0)}
+function hideViews(){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.querySelectorAll('.home-only').forEach(v=>v.classList.add('hidden-home'))}
+function showHomeContent(){document.querySelectorAll('.home-only').forEach(v=>v.classList.remove('hidden-home'))}
+function startFlow(flow){
+    if(!['A','B'].includes(flow))return;
+    requestedFlow=flow;
+    sessionStorage.setItem('requestedFlow',flow);
+    if(!currentUser){openAuth();return}
+    openRequestedFlow();
+}
+function openRequestedFlow(){
+    if(!currentUser||!requestedFlow)return false;
+    const flow=requestedFlow;
+    requestedFlow=null;
+    sessionStorage.removeItem('requestedFlow');
+    openProcedure(flow);
+    return true;
+}
+const draftTimers={};
+function draftKey(type){return `cartarumo:draft:${currentUser?.id||'anonymous'}:${type}`}
+function hasDraft(type){try{return Boolean(localStorage.getItem(draftKey(type)))}catch{return false}}
+function updateDraftUI(type,message){const suffix=type==='A'?'A':'B';const status=$('draftStatus'+suffix);if(status)status.textContent=message;const clear=$('clearDraft'+suffix);if(clear)clear.classList.toggle('hidden',!hasDraft(type))}
+function saveDraft(type){
+    if(!currentUser)return;
+    const suffix=type==='A'?'A':'B';
+    const form=$(type==='A'?'enrollForm':'diligenceForm');
+    const fields={};
+    new FormData(form).forEach((value,key)=>fields[key]=value);
+    form.querySelectorAll('input,select,textarea').forEach(input=>{if(input.id)fields[input.id]=input.value});
+    try{localStorage.setItem(draftKey(type),JSON.stringify({savedAt:new Date().toISOString(),fields}));updateDraftUI(type,'Rascunho guardado neste navegador até ao envio ou à eliminação.');}
+    catch(error){updateDraftUI(type,'Não foi possível guardar o rascunho neste navegador.');console.warn('Falha ao guardar rascunho:',error)}
+}
+function restoreDraft(type){
+    const form=$(type==='A'?'enrollForm':'diligenceForm');form.reset();
+    let draft=null;
+    try{draft=JSON.parse(localStorage.getItem(draftKey(type))||'null')}catch(error){try{localStorage.removeItem(draftKey(type))}catch{}}
+    if(draft?.fields){Object.entries(draft.fields).forEach(([id,value])=>{const field=$(id);if(field&&form.contains(field))field.value=value});updateDraftUI(type,'Rascunho recuperado. Os dados ficam guardados neste navegador até ao envio ou à eliminação.');}
+    else updateDraftUI(type,'Os dados do formulário são guardados como rascunho neste navegador.');
+    form.querySelectorAll('.error').forEach(error=>error.textContent='');
+}
+function queueDraftSave(type){clearTimeout(draftTimers[type]);draftTimers[type]=setTimeout(()=>saveDraft(type),350)}
+function clearDraft(type){clearTimeout(draftTimers[type]);try{localStorage.removeItem(draftKey(type))}catch{}const form=$(type==='A'?'enrollForm':'diligenceForm');form.reset();form.querySelectorAll('.error').forEach(error=>error.textContent='');updateDraftUI(type,'Rascunho apagado.');}
+function openProcedure(flow){activeFlow=flow;restoreDraft(flow);pendingRequest=null;if(flow==='A'){enrollStep=1;renderEnrollStep()}hideViews();const viewId=flow==='A'?'enrollView':'diligenceView';$(viewId).classList.add('active');window.scrollTo(0,0)}
+function renderEnrollStep(){const view=$('enrollView');view.querySelectorAll('.step').forEach(step=>step.classList.toggle('active',+step.dataset.step===enrollStep));const labels=['Dados pessoais','Contactos e morada','Formação','Récapitulatif'];$('enrollProgress').innerHTML=labels.map((label,index)=>`<div class="progress-step ${index+1<enrollStep?'done':''} ${index+1===enrollStep?'current':''}" data-number="${index+1}">${label}</div>`).join('');if(enrollStep===4)buildEnrollSummary()}
+function validateEnrollStep(){const step=$('enrollView').querySelector('.step.active');let valid=true;step.querySelectorAll('input,select,textarea').forEach(input=>{if(!validateField(input))valid=false});return valid}
+function nextEnrollStep(){if(!validateEnrollStep())return;if(enrollStep<4){enrollStep++;renderEnrollStep();window.scrollTo(0,0)}}
+function prevEnrollStep(){if(enrollStep>1){enrollStep--;renderEnrollStep();window.scrollTo(0,0)}}
+function buildEnrollSummary(){const rows=[['Nome completo',val('aName')],['Data de nascimento',val('aBirth')],['Nacionalidade',val('aNationality')],['NIF',val('aNif')],['Documento',val('aDocument')+' · '+val('aDocumentNumber')],['E-mail',val('aEmail')],['Telefone',val('aPhone')],['Morada',val('aAddress')],['Código postal',val('aPostal')],['Cidade',val('aCity')],['Fórmula',val('aFormula')],['Categoria',val('aCategory')],['Horário preferencial',val('aSchedule')],['Observações',val('aNotes')]];$('enrollSummary').innerHTML=card('Dados da inscrição',1,rows)}
+function newRequest(){showPersonalArea()}
+
+let activeRequestType='';
+let pendingRequest=null;
+function beginRequest(type){
+    if(!currentUser){openAuth();return}
+    const form=$(type==='A'?'enrollForm':'diligenceForm');
+    let valid=true;
+    form.querySelectorAll('input,select').forEach(input=>{
+        const fieldValid=validateField(input)&&input.checkValidity();
+        const error=input.parentElement.querySelector('.error');
+        if(!fieldValid){valid=false;if(error&&!error.textContent)error.textContent='Verifique este campo.';}
+    });
+    if(!valid){
+        const firstInvalid=form.querySelector(':invalid, .invalid');
+        if(firstInvalid){firstInvalid.focus();firstInvalid.reportValidity?.()}
+        return;
+    }
+    clearTimeout(draftTimers[type]);
+    saveDraft(type);
+    activeRequestType=type;
+    $('termsAccepted').checked=false;
+    $('termsError').textContent='';
+    hideViews();
+    $('termsView').classList.add('active');
+    window.scrollTo(0,0);
+}
+function returnToRequest(){hideViews();$(activeRequestType==='A'?'enrollView':'diligenceView').classList.add('active');window.scrollTo(0,0)}
+function reviewRequest(){
+    if(!$('termsAccepted').checked){$('termsError').textContent='Aceite os termos descritos para continuar.';return}
+    const isA=activeRequestType==='A';
+    pendingRequest={
+        type:isA?'Opção A - Aulas de Condução':'Opção B - Diligência / Carta',
+        nom:$(isA?'aName':'bName').value.trim(),
+        email:$(isA?'aEmail':'bEmail').value.trim(),
+        contact:$(isA?'aPhone':'bPhone').value.trim(),
+        city:$(isA?'aCity':'bCity').value,
+        service_type:isA?'Inscrição - Aulas de Condução':'Diligências & Carta de Condução',
+        info:isA?JSON.stringify({data_nascimento:val('aBirth'),nacionalidade:val('aNationality'),nif:val('aNif'),documento:val('aDocument')+' · '+val('aDocumentNumber'),morada:val('aAddress'),codigo_postal:val('aPostal'),formula:val('aFormula'),categoria:val('aCategory'),horario:val('aSchedule'),observacoes:val('aNotes')}):'Motivo: '+$('bReason').value,
+        ownerEmail:currentUser?.email||''
+    };
+    const rows=[['Nome',pendingRequest.nom],['E-mail',pendingRequest.email],['Telefone',pendingRequest.contact],['Cidade',pendingRequest.city],['Processo',pendingRequest.type],['Detalhes',pendingRequest.info]];
+    const summary=$('confirmSummary');
+    summary.replaceChildren();
+    rows.forEach(([label,value])=>{const dt=document.createElement('dt');dt.textContent=label;const dd=document.createElement('dd');dd.textContent=value;summary.append(dt,dd)});
+    $('confirmError').textContent='';
+    $('confirmModal').classList.remove('hidden');
+    $('confirmSubmitBtn').focus();
+}
+function closeConfirmModal(){
+    $('confirmModal').classList.add('hidden');
+    if(activeRequestType){hideViews();const formView=$(activeRequestType==='A'?'enrollView':'diligenceView');formView.classList.add('active');window.scrollTo(0,0);formView.querySelector('input')?.focus()}
+}
+$('confirmModal').addEventListener('keydown',event=>{
+    if(event.key==='Escape'){event.preventDefault();closeConfirmModal();return}
+    if(event.key==='Tab'){
+        const focusable=[...$('confirmModal').querySelectorAll('button:not(:disabled),[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')];
+        if(!focusable.length)return;
+        const first=focusable[0],last=focusable[focusable.length-1];
+        if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
+        else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
+    }
+});
+async function confirmRequest(){
+    if(!pendingRequest||!currentUser){$('confirmError').textContent='Inicie sessão novamente antes de confirmar.';return}
+    const button=$('confirmSubmitBtn');
+    button.disabled=true;$('confirmError').textContent='';
+    const record={...pendingRequest,user_id:currentUser.id};
+    try{
+        const {data:savedRequest,error}=await supabaseClient.from('requests').insert([{
+            type:record.type,nom:record.nom,email:record.email,contact:record.contact,city:record.city,
+            service_type:record.service_type,service:activeRequestType==='A'?'license':'exam',info:record.info,user_id:record.user_id
+        }]).select('protocol,date,status,owner_email').single();
+        if(error)throw error;
+        try{localStorage.removeItem(draftKey(activeRequestType))}catch(storageError){console.warn('Não foi possível apagar o rascunho local:',storageError)}
+        lastSubmission={...record,ownerEmail:savedRequest.owner_email,protocol:savedRequest.protocol,date:new Date(savedRequest.date).toLocaleString('pt-PT'),status:savedRequest.status,service:record.service_type};
+        $('successProtocol').textContent=lastSubmission.protocol;
+        $('successDate').textContent=lastSubmission.date;
+        $('successService').textContent=lastSubmission.service;
+        $('successStatus').textContent=lastSubmission.status;
+        $('successStatus').dataset.status=lastSubmission.status;
+        $('receiptNotice').textContent='';
+        $('confirmModal').classList.add('hidden');
+        hideViews();$('successView').classList.add('active');window.scrollTo(0,0);
+        downloadReceipt();
+    }catch(err){
+        $('confirmError').textContent='Não foi possível registar o pedido. Tente novamente. '+(err.message||'');
+    }finally{button.disabled=false}
+}
+
+async function resetPassword(){
+    const email=$('authEmail').value.trim().toLowerCase();
+    const error=$('authError');
+    if(!email||!validateField($('authEmail'))){error.textContent='Introduza primeiro o seu e-mail.';return}
+    const {error:resetError}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+    error.textContent=resetError?resetError.message:'Verifique o seu e-mail para redefinir a palavra-passe.';
+}
+
+async function logout(){await supabaseClient.auth.signOut();currentUser=null;requestedFlow=null;sessionStorage.removeItem('requestedFlow');updateAuthNav();showServices()}
+
+async function renderOrders(){
+    const box=$('ordersList');
+    const orders=await getOrders();
+    if(!orders.length){box.innerHTML='<p class="step-intro">Ainda não efetuou nenhum pedido.</p>';return}
+    box.innerHTML=orders.map(o=>`<article class="order-item"><div><span>Tipo de diligência</span><strong>${esc(o.service)}</strong></div><div><span>Protocolo</span><strong>${esc(o.protocol)}</strong></div><div><span>Data · Estado</span><strong>${esc(o.date)}</strong><span class="status-pill" data-status="${esc(o.status)}">${esc(o.status)}</span></div><div class="order-actions"><button type="button" data-order-action="view" data-protocol="${esc(o.protocol)}">Consultar</button><button type="button" data-order-action="download" data-protocol="${esc(o.protocol)}">Descarregar PDF</button></div></article>`).join('');
+    box.querySelectorAll('[data-order-action]').forEach(button=>button.addEventListener('click',()=>button.dataset.orderAction==='view'?viewOrder(button.dataset.protocol):downloadOrder(button.dataset.protocol)));
+}
+
+async function viewOrder(protocol){
+    const orders=await getOrders();
+    const order=orders.find(x=>x.protocol===protocol);
+    if(order){lastSubmission=order;hideViews();$('successView').classList.add('active');$('successProtocol').textContent=order.protocol;$('successDate').textContent=order.date;$('successService').textContent=order.service;$('successStatus').textContent=order.status;$('successStatus').dataset.status=order.status;window.scrollTo(0,0)}
+}
+async function downloadOrder(protocol){
+    const orders=await getOrders();
+    const order=orders.find(x=>x.protocol===protocol);
+    if(order){lastSubmission=order;downloadReceipt()}
+}
+
+async function handleAuth(event){
+    event.preventDefault();
+    const email=$('authEmail').value.trim().toLowerCase();
+    const password=$('authPassword').value;
+    const error=$('authError');
+    if(!validateField($('authEmail'))||!validateField($('authPassword'))||(authMode==='register'&&!validateField($('authName'))))return;
+    if(authMode==='register'&&$('authPasswordConfirm').value!==password){$('authPasswordConfirm').parentElement.querySelector('.error').textContent='As palavras-passe não coincidem.';return}
+    if(authMode==='register'&&!$('authPrivacy').checked){error.textContent='Aceite a política de privacidade para continuar.';return}
+    try{
+        const result=authMode==='register'?await supabaseClient.auth.signUp({email,password,options:{data:{name:$('authName').value.trim()}}}):await supabaseClient.auth.signInWithPassword({email,password});
+        if(result.error)throw result.error;
+        currentUser=result.data.user;
+        if(authMode==='register'&&!result.data.session){error.textContent='Verifique o seu e-mail para ativar a conta. Depois de confirmar, será encaminhado para o formulário escolhido.';return}
+        if(!openRequestedFlow())showPersonalArea()
+    }catch(err){error.textContent=err.message||'Não foi possível concluir a operação.'}
+}
+
+// --- GÉNÉRATEUR DE PDF OFFICIEL SÉCURISÉ ---
+function downloadReceipt(){
+    if(!lastSubmission)return;
+    if(!window.jspdf?.jsPDF){$('receiptNotice').textContent='O pedido foi registado, mas o PDF não está disponível neste momento. Tente descarregá-lo novamente mais tarde.';return}
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 18;
+    const contentBottom = pageHeight - 31;
+
+    function drawPage() {
+        doc.setFillColor(0, 86, 179);
+        doc.rect(0, 0, pageWidth, 7, 'F');
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.setTextColor(0, 65, 130);
+        doc.text('CartaRumo', margin, 18);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(80, 93, 108);
+        doc.text('REPÚBLICA PORTUGUESA — ESCOLA DE CONDUÇÃO', margin, 23);
+
+        doc.setFillColor(235, 243, 251);
+        doc.setDrawColor(190, 211, 232);
+        doc.roundedRect(margin, 32, pageWidth - margin * 2, 16, 2, 2, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(0, 65, 130);
+        doc.text('COMPROVATIVO OFICIAL DE REGISTO E INTERMEDIAÇÃO', margin + 4, 39);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(55, 65, 75);
+        doc.text('Documento processado eletronicamente ao abrigo dos serviços de apoio CartaRumo.', margin + 4, 44);
+
+        doc.setDrawColor(215, 222, 230);
+        doc.line(margin, pageHeight - 22, pageWidth - margin, pageHeight - 22);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(100, 110, 120);
+        doc.text('Validação automática por computador — Suporte oficial: cartarumo@gmail.com', margin, pageHeight - 16);
+        doc.text('Página ' + doc.internal.getNumberOfPages(), pageWidth - margin, pageHeight - 16, { align: 'right' });
+    }
+
+    function nextPage() {
+        doc.addPage();
+        drawPage();
+        return 56;
+    }
+
+    function addParagraph(text, y, fontSize = 8.5, lineHeight = 4.2) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(fontSize);
+        doc.setTextColor(55, 65, 75);
+        const lines = doc.splitTextToSize(text, pageWidth - margin * 2);
+        lines.forEach(line => {
+            if (y > contentBottom) y = nextPage();
+            doc.text(line, margin, y);
+            y += lineHeight;
+        });
+        return y + 2;
+    }
+
+    drawPage();
+
+    doc.setFillColor(235, 243, 251);
+    doc.setDrawColor(190, 211, 232);
+    doc.roundedRect(margin, 52, pageWidth - margin * 2, 18, 2, 2, 'FD');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(60, 80, 100);
+    doc.text('NÚMERO DE PROTOCOLO OFICIAL', margin + 5, 59);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(0, 65, 130);
+    doc.text(lastSubmission.protocol, margin + 5, 66);
+
+    let y = 76;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(0, 51, 102);
+    doc.text('Dados do Requerente e do Processo', margin, y);
+    y += 6;
+
+    let extraDetails = [];
+    try {
+        const parsed = JSON.parse(lastSubmission.info || '{}');
+        const labels = {data_nascimento:'Data de nascimento',nacionalidade:'Nacionalidade',nif:'NIF',documento:'Documento de identificação',morada:'Morada',codigo_postal:'Código postal',formula:'Fórmula escolhida',categoria:'Categoria pretendida',horario:'Horário preferencial',observacoes:'Observações'};
+        extraDetails = Object.entries(parsed).map(([key,value]) => [labels[key] || key, value]);
+    } catch (_) {
+        if (lastSubmission.info) extraDetails = [['Informações / Detalhes', lastSubmission.info]];
+    }
+    const details = [
+        ['Número de Protocolo', lastSubmission.protocol],
+        ['Nome Completo', lastSubmission.nom],
+        ['Endereço de E-mail', lastSubmission.email],
+        ['Contacto telefónico', lastSubmission.contact],
+        ['Cidade', lastSubmission.city],
+        ['Tipo de Serviço', lastSubmission.service],
+        ...extraDetails,
+        ['Estado do Pedido', lastSubmission.status],
+        ['Data e Hora', lastSubmission.date]
+    ];
+
+    const labelWidth = 54;
+    const valueWidth = pageWidth - margin * 2 - labelWidth - 5;
+    details.forEach(([label, value]) => {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+        const valueLines = doc.splitTextToSize(String(value || '—'), valueWidth);
+        const rowHeight = Math.max(8, valueLines.length * 4 + 3);
+        if (y + rowHeight > contentBottom) y = nextPage();
+        doc.setFillColor(248, 250, 252);
+        doc.setDrawColor(225, 230, 236);
+        doc.rect(margin, y, pageWidth - margin * 2, rowHeight, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(65, 78, 92);
+        doc.text(label, margin + 3, y + 5.5);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(45, 52, 60);
+        doc.text(valueLines, margin + labelWidth, y + 5.5);
+        y += rowHeight;
+    });
+
+    y += 6;
+    if (y > contentBottom - 15) y = nextPage();
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(0, 51, 102);
+    doc.text('Regras, Políticas e Enquadramento Legal', margin, y);
+    y += 6;
+
+    y = addParagraph('1. Enquadramento e Intermediação: A CartaRumo atua como plataforma digital de apoio e orientação administrativa para processos associados à carta de condução em território português.', y);
+    y = addParagraph('2. Compromisso de Autenticidade: O requerente declara, sob compromisso de honra, que todas as informações prestadas são autênticas e corretas.', y);
+    y = addParagraph('3. Proteção de Dados (RGPD): Os dados recolhidos são tratados com estrita confidencialidade.', y);
+    y = addParagraph('4. Validação e Limitação de Responsabilidade: Este documento constitui um comprovativo interno de registo na plataforma.', y);
+
+    doc.save(`CartaRumo_${lastSubmission.protocol}.pdf`);
+}
+
+function printReceipt(){
+  if(!lastSubmission)return;
+  const popup=window.open('','_blank','width=700,height=700');
+  if(!popup)return;
+  const receiptHtml=`<html lang="pt"><head><title>Bordereau ${esc(lastSubmission.protocol)}</title><style>body{font-family:Arial;padding:40px;color:#172033}h1{color:#0b3a6e}div{border:1px solid #dce4ee;padding:20px;margin-top:20px}</style></head><body><h1>${esc(schoolName)}</h1><h2>${esc(lastSubmission.service)}</h2><div><p><strong>Número de protocolo:</strong> ${esc(lastSubmission.protocol)}</p><p><strong>Data:</strong> ${esc(lastSubmission.date)}</p><p><strong>Estado:</strong> ${esc(lastSubmission.status)}</p></div></body></html>`;
+  popup.document.open();
+  popup.document.write(receiptHtml);
+  popup.document.close();
+  popup.focus();
+  popup.print();
+}
+
+function renderProgress(flow){const labels=flow==='license'?['Dados pessoais','Morada e contactos','Categoria','Documentos','Confirmação']:['Tipo de exame','Categoria','Identificação','Dados do exame','Confirmação'];$(flow+'Progress').innerHTML=labels.map((x,i)=>`<div class="progress-step ${i+1<state[flow].step?'done':''} ${i+1===state[flow].step?'current':''}" data-number="${i+1}">${x}</div>`).join('')}
+function renderStep(flow){const view=$(flow+'View');view.querySelectorAll('.step').forEach(s=>s.classList.toggle('active',+s.dataset.step===state[flow].step));renderProgress(flow);if(flow==='license'&&state.license.step===5)buildLicenseSummary();if(flow==='exam'&&state.exam.step===5)buildExamSummary()}
+function validateField(input){if(!input||input.disabled)return true;const v=input.value.trim();let msg="";if(input.required&&!v)msg="Este campo é obrigatório.";else if(input.type==='email'&&v&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))msg="Introduza um endereço de e-mail válido.";else if((input.id.includes('Postal'))&&v&&!/^\d{4}-\d{3}$/.test(v))msg="Introduza um código postal válido.";else if(input.id.toLowerCase().includes('nif')&&v&&!/^\d{9}$/.test(v))msg="Introduza um NIF válido.";else if(input.type==='tel'&&v&&!/^[+\d][\d\s().-]{7,}$/.test(v))msg="Introduza um número de telefone válido.";else if(input.type==='email'&&v&&!input.validity.valid)msg="Introduza um endereço de e-mail válido.";const error=input.parentElement?.querySelector('.error');if(error)error.textContent=msg;input.classList.toggle('invalid',!!msg);input.setAttribute('aria-invalid',String(!!msg));return !msg}
+function validateStep(flow){const step=$(flow+'View').querySelector('.step.active');let ok=true;step.querySelectorAll('input,select,textarea').forEach(i=>{if(!validateField(i))ok=false});if(flow==='license'&&state.license.step===3&&!state.license.category){$('licenseCategoryError').textContent='Selecione uma categoria.';ok=false}if(flow==='license'&&state.license.step===4&&!Object.keys(state.license.files).length){$('licenseFileError').textContent='Selecione um ficheiro válido.';ok=false}if(flow==='exam'&&state.exam.step===1&&!state.exam.type){$('examTypeError').textContent='Selecione o tipo de exame.';ok=false}if(flow==='exam'&&state.exam.step===2&&!state.exam.category){$('examCategoryError').textContent='Selecione uma categoria.';ok=false}return ok}
+function next(flow){if(!validateStep(flow))return;if(state[flow].step<5){state[flow].step++;renderStep(flow);window.scrollTo(0,0)}}
+function prev(flow){if(state[flow].step>1){state[flow].step--;renderStep(flow);window.scrollTo(0,0)}}
+
+function renderCategories(id,flow){
+  $(id).innerHTML=categoryList.map(c=>`<button type="button" class="category ${state[flow].category===c?'selected':''}" data-category="${c}"><strong>${c}</strong>${categories[c]?`<small>${categories[c]}</small>`:''}</button>`).join('');
+  $(id).querySelectorAll('.category').forEach(b=>{
+    b.onclick=()=>{
+      state[flow].category=b.dataset.category;
+      $(id).querySelectorAll('.category').forEach(x=>x.classList.remove('selected'));
+      b.classList.add('selected');
+      $(flow==='license'?'licenseCategoryError':'examCategoryError').textContent='';
+    };
+  });
+}
+renderCategories('licenseCategories','license');renderCategories('examCategories','exam');
+$('lNacionalidade').onchange=()=>{$('lOutraWrap').classList.toggle('hidden',$('lNacionalidade').value!=='Outra');$('lOutra').required=$('lNacionalidade').value==='Outra'};
+document.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{state.exam.type=b.dataset.exam;document.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');$('examTypeError').textContent='' });
+
+const uploadDocs=[['identificacao','Documento de identificação','▣'],['fotografia','Fotografia tipo passe','▧'],['medico','Atestado médico','✚'],['outro','Outro documento','＋']];
+function renderUploads(){
+  const box=$('licenseUploads');
+  box.innerHTML=uploadDocs.map(([key,label,icon])=>`<div class="upload"><div class="upload-head"><span class="upload-icon">${icon}</span><span class="upload-name">${label}</span></div><input type="file" id="file-${key}" accept="application/pdf,image/jpeg,image/png"><label for="file-${key}">Escolher ficheiro</label><span class="upload-info" id="info-${key}">Nenhum ficheiro selecionado</span><button type="button" class="remove-file hidden" id="remove-${key}">Remover</button></div>`).join('');
+  uploadDocs.forEach(([key])=>{
+    const input=$('file-'+key);
+    const remove=$('remove-'+key);
+    input.onchange=()=>{
+      const file=input.files[0];
+      const info=$('info-'+key);
+      if(!file)return;
+      if(!['application/pdf','image/jpeg','image/png'].includes(file.type)){
+        info.textContent='Formato não aceite. Selecione um ficheiro PDF, JPG ou PNG.';
+        input.value='';
+        delete state.license.files[key];
+        remove.classList.add('hidden');
+        return;
+      }
+      if(file.size>10*1024*1024){
+        info.textContent='Ficheiro demasiado grande. O tamanho máximo permitido é 10 MB.';
+        input.value='';
+        delete state.license.files[key];
+        remove.classList.add('hidden');
+        return;
+      }
+      state.license.files[key]=file;
+      info.textContent=`${file.name} · ${formatSize(file.size)}`;
+      remove.classList.remove('hidden');
+      $('licenseFileError').textContent='';
+    };
+    remove.onclick=()=>{
+      input.value='';
+      delete state.license.files[key];
+      $('info-'+key).textContent='Nenhum ficheiro selecionado';
+      remove.classList.add('hidden');
+    };
+  });
+}
+function formatSize(n){return n<1024*1024?`${Math.max(1,Math.round(n/1024))} KB`:`${(n/1024/1024).toFixed(1)} MB`}
+renderUploads();
+// Retire the replaced legacy request forms after their existing setup code has run.
+$('licenseView').remove();$('examView').remove();
+document.querySelectorAll('.field input,.field select,.field textarea').forEach(input=>{const error=input.parentElement.querySelector('.error');if(error){if(!error.id)error.id=input.id+'-error';error.setAttribute('aria-live','polite');input.setAttribute('aria-describedby',error.id)}});
+document.addEventListener('input',e=>{if(e.target.matches('input,select,textarea')){validateField(e.target);if(e.target.form?.id==='enrollForm')queueDraftSave('A');if(e.target.form?.id==='diligenceForm')queueDraftSave('B')}});
+document.addEventListener('change',e=>{if(e.target.matches('#enrollForm input,#enrollForm select,#diligenceForm input,#diligenceForm select')){if(e.target.form?.id==='enrollForm')queueDraftSave('A');if(e.target.form?.id==='diligenceForm')queueDraftSave('B')}});
+function val(id){return $(id)?.value||'—'}
+function card(title,step,rows){return `<div class="summary-card"><h4>${title}<button type="button" onclick="editStep('${activeFlow}',${step})">Editar</button></h4><dl>${rows.map(r=>`<dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd>`).join('')}</dl></div>`}
+function editStep(flow,step){state[flow].step=step;renderStep(flow);window.scrollTo(0,0)}
+
+function buildLicenseSummary(){
+    const files=Object.values(state.license.files).map(f=>f.name).join(', ')||'—';
+    $('licenseSummary').innerHTML=card('Dados pessoais',1,[['Nome',val('lNome')+' '+val('lApelido')],['Nascimento',val('lNascimento')],['Naturalidade',val('lNaturalidade')],['Nacionalidade',val('lNacionalidade')==='Outra'?val('lOutra'):val('lNacionalidade')],['NIF',val('lNif')],['Documento',val('lDocTipo')+' · '+val('lDocNumero')]])+card('Morada e contactos',2,[['Morada',val('lMorada')],['Localidade',val('lLocalidade')],['Código Postal',val('lPostal')],['E-mail',val('lEmail')],['Telemóvel',val('lTelemovel')]])+card('Categoria pretendida',3,[['Categoria',state.license.category]])+card('Documentos',4,[['Ficheiros',files]]);
+}
+function buildExamSummary(){
+    $('examSummary').innerHTML=card('Tipo de exame',1,[['Tipo',state.exam.type]])+card('Categoria',2,[['Categoria',state.exam.category]])+card('Dados do candidato',3,[['Nome',val('eNome')+' '+val('eApelido')],['Nascimento',val('eNascimento')],['NIF',val('eNif')],['Documento',val('eDocTipo')+' · '+val('eDocNumero')],['Morada',val('eMorada')],['Contacto',val('eEmail')+' · '+val('eTelemovel')]])+card('Dados do exame',4,[['Documento atual',val('eDocumento')],['Emissor',val('eEmissor')],['Centro de exames',val('eCentro')],['Escola',schoolName+' · '+schoolLocation],['Observações',val('eObservacoes')]]);
+}
+
+async function submitFlow(flow){
+    const confirm=$(flow+'Confirm');
+    const error=$(flow+'ConfirmError');
+    if(!confirm.checked){error.textContent='Confirme os dados introduzidos para continuar.';return}
+    
+    if(!currentUser){
+        alert('Necessita de iniciar sessão para submeter o pedido.');
+        openAuth();
+        return;
+    }
+
+    const now=new Date();
+    const number='AUTO-'+now.getFullYear()+'-'+String(Math.floor(100000+Math.random()*900000));
+    const serviceName=flow==='license'?'Pedido de Licença de Aprendizagem':'Pedido de Exame';
+
+    try{
+        const {data:reqData,error:reqError}=await supabaseClient
+            .from('requests')
+            .insert([{
+                user_id:currentUser.id,
+                protocol:number,
+                service_type:serviceName,
+                service:flow==='license'?'license':'exam',
+                status:'Pedido recebido',
+                owner_email:currentUser.email,
+                nom: flow==='license' ? val('lNome')+' '+val('lApelido') : val('eNome')+' '+val('eApelido'),
+                email: flow==='license' ? val('lEmail') : val('eEmail')
+            }])
+            .select()
+            .single();
+
+        if(reqError) console.error("Erreur Supabase non bloquante:", reqError.message);
+    }catch(err){
+        console.error("Exception Supabase:", err);
+    }
+
+    lastSubmission={
+        protocol:number,
+        date:now.toLocaleString('pt-PT'),
+        service:serviceName,
+        status:'Pedido recebido',
+        email:currentUser.email
+    };
+
+    $('successProtocol').textContent=number;
+    $('successDate').textContent=lastSubmission.date;
+    $('successService').textContent=lastSubmission.service;
+    hideViews();
+    $('successView').classList.add('active');
+    window.scrollTo(0,0);
+}
+
+$('authForm').addEventListener('submit', handleAuth);
+$('enrollForm').addEventListener('submit',event=>{event.preventDefault();beginRequest('A')});
+$('diligenceForm').addEventListener('submit',event=>{event.preventDefault();beginRequest('B')});
+setAuthMode('login');
+updateAuthNav();
+
+async function initializeApp() {
+    try {
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        if (error) throw error;
+
+        currentUser = session?.user || null;
+        updateAuthNav();
+
+        if (currentUser) {
+            if(!openRequestedFlow())showPersonalArea();
+        } else {
+            hideViews();
+            showHomeContent();
+        }
+    } catch (err) {
+        console.error("Erreur lors de l'initialisation :", err.message);
+        hideViews();
+        showHomeContent();
+    }
+
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+        currentUser = session?.user || null;
+        updateAuthNav();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeApp();
+});
+
+$('menuBtn').onclick = () => {$('mainNav').classList.toggle('open'); };
+document.querySelectorAll('#mainNav a').forEach(a => a.onclick = () => { $('mainNav').classList.remove('open'); });
+</script>
+</body>
+</html>
