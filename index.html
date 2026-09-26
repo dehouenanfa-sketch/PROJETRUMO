@@ -405,21 +405,22 @@ function downloadReceipt(){
 
         doc.setFillColor(235, 243, 251);
         doc.setDrawColor(190, 211, 232);
-        doc.roundedRect(margin, 32, pageWidth - margin * 2, 16, 2, 2, 'FD');
+        doc.roundedRect(margin, 32, pageWidth - margin * 2, 24, 2, 2, 'FD');
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
+        doc.setFontSize(13);
         doc.setTextColor(0, 65, 130);
-        doc.text('COMPROVATIVO OFICIAL DE REGISTO E INTERMEDIAÇÃO', margin + 4, 39);
+        doc.text('BORDEREAU DE PEDIDO', margin + 5, 42);
         doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9.5);
         doc.setTextColor(55, 65, 75);
-        doc.text('Documento processado eletronicamente ao abrigo dos serviços de apoio CartaRumo.', margin + 4, 44);
+        doc.text('Acompanhamos o seu processo de obtenção da carta de condução com rapidez e segurança.', margin + 5, 50);
 
         doc.setDrawColor(215, 222, 230);
         doc.line(margin, pageHeight - 22, pageWidth - margin, pageHeight - 22);
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7.5);
         doc.setTextColor(100, 110, 120);
-        doc.text('Validação automática por computador — Suporte oficial: cartarumo@gmail.com', margin, pageHeight - 16);
+        doc.text('CartaRumo · Acompanhamento do pedido', margin, pageHeight - 16);
         doc.text('Página ' + doc.internal.getNumberOfPages(), pageWidth - margin, pageHeight - 16, { align: 'right' });
     }
 
@@ -446,27 +447,27 @@ function downloadReceipt(){
 
     doc.setFillColor(235, 243, 251);
     doc.setDrawColor(190, 211, 232);
-    doc.roundedRect(margin, 52, pageWidth - margin * 2, 18, 2, 2, 'FD');
+    doc.roundedRect(margin, 62, pageWidth - margin * 2, 23, 2, 2, 'FD');
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
+    doc.setFontSize(9.5);
     doc.setTextColor(60, 80, 100);
-    doc.text('NÚMERO DE PROTOCOLO OFICIAL', margin + 5, 59);
+    doc.text('NÚMERO DO PEDIDO', margin + 6, 71);
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(14);
+    doc.setFontSize(16);
     doc.setTextColor(0, 65, 130);
-    doc.text(lastSubmission.protocol, margin + 5, 66);
+    doc.text(lastSubmission.protocol, margin + 6, 80);
 
-    let y = 76;
+    let y = 98;
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
+    doc.setFontSize(13);
     doc.setTextColor(0, 51, 102);
-    doc.text('Dados do Requerente e do Processo', margin, y);
-    y += 6;
+    doc.text('Identificação do requerente e do pedido', margin, y);
+    y += 10;
 
     let extraDetails = [];
     try {
         const parsed = JSON.parse(lastSubmission.info || '{}');
-        const labels = {dados_pessoais:'Dados pessoais',morada_contactos:'Morada e contactos',dados_diligencia:'Dados da diligência',data_nascimento:'Data de nascimento',nacionalidade:'Nacionalidade',nif:'NIF',documento:'Documento de identificação',numero_documento:'Número do documento',data_emissao:'Data de emissão',data_validade:'Data de validade',naturalidade:'Naturalidade',morada:'Morada',localidade:'Localidade',codigo_postal:'Código postal',concelho:'Concelho',distrito:'Distrito',pais:'País',email:'E-mail',telemovel:'Telemóvel',categoria:'Categoria pretendida',tipo_diligencia:'Tipo de diligência',documentos:'Documentos transmitidos'};
+        const labels = {dados_pessoais:'Dados pessoais',morada_contactos:'Morada e contactos',contactos_localizacao:'Contactos e localização',dados_diligencia:'Dados da diligência',data_nascimento:'Data de nascimento',nacionalidade:'Nacionalidade',nif:'NIF',documento:'Documento de identificação',numero_documento:'Número do documento',data_emissao:'Data de emissão',data_validade:'Data de validade',naturalidade:'Local de nascimento',morada:'Morada',localidade:'Ville',cidade:'Ville',codigo_postal:'Código postal',concelho:'Concelho',distrito:'Distrito',pais:'País',email:'E-mail',telemovel:'Telemóvel',categoria:'Categoria pretendida',tipo_diligencia:'Tipo de diligência',documentos:'Documentos transmitidos'};
         const flatten = (value, prefix='') => Object.entries(value||{}).forEach(([key,item]) => {
             const label=labels[key]||key.replaceAll('_',' ');
             if(item&&typeof item==='object'&&!Array.isArray(item))flatten(item,prefix?`${prefix} · ${label}`:label);
@@ -480,7 +481,6 @@ function downloadReceipt(){
         ['Número de Protocolo', lastSubmission.protocol],
         ['Nome Completo', lastSubmission.nom],
         ['Endereço de E-mail', lastSubmission.email],
-        ['Contacto telefónico', lastSubmission.contact],
         ['Cidade', lastSubmission.city],
         ['Tipo de Serviço', lastSubmission.service],
         ...extraDetails,
@@ -488,40 +488,178 @@ function downloadReceipt(){
         ['Data e Hora', [lastSubmission.date,lastSubmission.time].filter(Boolean).join(' · ')]
     ];
 
-    const labelWidth = 54;
-    const valueWidth = pageWidth - margin * 2 - labelWidth - 5;
+    const labelWidth = 58;
+    const valueWidth = pageWidth - margin * 2 - labelWidth - 10;
     details.forEach(([label, value]) => {
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
+        doc.setFontSize(10.5);
         const valueLines = doc.splitTextToSize(String(value || '—'), valueWidth);
-        const rowHeight = Math.max(8, valueLines.length * 4 + 3);
+        const rowHeight = Math.max(12, valueLines.length * 5.2 + 5);
         if (y + rowHeight > contentBottom) y = nextPage();
         doc.setFillColor(248, 250, 252);
         doc.setDrawColor(225, 230, 236);
-        doc.rect(margin, y, pageWidth - margin * 2, rowHeight, 'FD');
+        doc.roundedRect(margin, y, pageWidth - margin * 2, rowHeight, 1.5, 1.5, 'FD');
         doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9.5);
         doc.setTextColor(65, 78, 92);
-        doc.text(label, margin + 3, y + 5.5);
+        doc.text(label, margin + 4, y + 7.5);
         doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10.5);
         doc.setTextColor(45, 52, 60);
-        doc.text(valueLines, margin + labelWidth, y + 5.5);
-        y += rowHeight;
+        doc.text(valueLines, margin + labelWidth, y + 7.5);
+        y += rowHeight + 2;
     });
 
-    y += 6;
-    if (y > contentBottom - 15) y = nextPage();
+    y += 8;
+    if (y > contentBottom - 20) y = nextPage();
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
+    doc.setFontSize(13);
     doc.setTextColor(0, 51, 102);
-    doc.text('Regras, Políticas e Enquadramento Legal', margin, y);
-    y += 6;
+    doc.text('Informações e condições do pedido', margin, y);
+    y += 9;
 
-    y = addParagraph('1. Enquadramento e Intermediação: A CartaRumo atua como plataforma digital de apoio e orientação administrativa para processos associados à carta de condução em território português.', y);
-    y = addParagraph('2. Compromisso de Autenticidade: O requerente declara, sob compromisso de honra, que todas as informações prestadas são autênticas e corretas.', y);
-    y = addParagraph('3. Proteção de Dados (RGPD): Os dados recolhidos são tratados com estrita confidencialidade.', y);
-    y = addParagraph('4. Validação e Limitação de Responsabilidade: Este documento constitui um comprovativo interno de registo na plataforma.', y);
+    y = addParagraph('1. A CartaRumo acompanha o requerente nas diligências relacionadas com a obtenção da carta de condução, com o objetivo de prestar um apoio rápido e seguro.', y, 10, 5.2);
+    y = addParagraph('2. O requerente confirma que as informações fornecidas são exatas e completas.', y, 10, 5.2);
+    y = addParagraph('3. Todos os dados pessoais são tratados para efeitos de acompanhamento e processamento do pedido, de acordo com a política de privacidade.', y, 10, 5.2);
+    y = addParagraph('4. Todos os custos, taxas e encargos exigidos no âmbito deste procedimento são da responsabilidade do requerente.', y, 10, 5.2);
+    y = addParagraph('5. Este bordereau resume os dados submetidos e confirma o registo do pedido na plataforma CartaRumo.', y, 10, 5.2);
 
     doc.save(`CartaRumo_${lastSubmission.protocol}.pdf`);
+}
+
+async function downloadReceipt(){
+    if(!lastSubmission)return;
+    if(!window.jspdf?.jsPDF){$('receiptNotice').textContent='O pedido foi registado, mas o PDF não está disponível neste momento. Tente descarregá-lo novamente mais tarde.';return}
+
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({unit:'mm',format:'a4'});
+    const pageWidth=doc.internal.pageSize.getWidth();
+    const pageHeight=doc.internal.pageSize.getHeight();
+    const margin=18;
+    const bodyBottom=pageHeight-18;
+    const imageUrl='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGrOxS8LYqfzta0RTUbNEpGvMMfQEuW_IPDWCceLBUlnEIVRgd8s2jszKy&s=10';
+    let backgroundData=null;
+
+    // Prepare a faded copy so the requested image stays behind readable text.
+    try{
+        const image=new Image();
+        image.crossOrigin='anonymous';
+        backgroundData=await new Promise((resolve,reject)=>{
+            image.onload=()=>{
+                try{
+                    const canvas=document.createElement('canvas');
+                    canvas.width=1200;canvas.height=1697;
+                    const context=canvas.getContext('2d');
+                    context.fillStyle='#fff';context.fillRect(0,0,canvas.width,canvas.height);
+                    const scale=Math.max(canvas.width/image.width,canvas.height/image.height);
+                    const width=image.width*scale,height=image.height*scale;
+                    context.globalAlpha=.12;
+                    context.drawImage(image,(canvas.width-width)/2,(canvas.height-height)/2,width,height);
+                    resolve(canvas.toDataURL('image/jpeg',.82));
+                }catch(error){reject(error)}
+            };
+            image.onerror=reject;
+            image.src=imageUrl;
+        });
+    }catch(error){console.warn('Imagem de fundo indisponível para o PDF:',error)}
+
+    const drawPage=(pageNumber)=>{
+        if(backgroundData)doc.addImage(backgroundData,'JPEG',0,0,pageWidth,pageHeight,'background','FAST');
+        doc.setFillColor(11,58,110);doc.rect(0,0,pageWidth,3,'F');
+        doc.setFont('helvetica','bold');doc.setFontSize(15);doc.setTextColor(11,58,110);
+        doc.text('CartaRumo',margin,14);
+        doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(75,86,99);
+        doc.text('SERVIÇO DE ACOMPANHAMENTO DE PEDIDOS',margin,19);
+        if(pageNumber===1){
+            doc.setFillColor(238,245,252);doc.setDrawColor(190,211,232);
+            doc.roundedRect(margin,25,pageWidth-2*margin,25,2,2,'FD');
+            doc.setFont('helvetica','bold');doc.setFontSize(16);doc.setTextColor(11,58,110);
+            doc.text('BORDEREAU DE PEDIDO',margin+6,35);
+            doc.setFont('helvetica','normal');doc.setFontSize(9.5);doc.setTextColor(45,58,72);
+            doc.text('Acompanhamos o seu processo de obtenção da carta de condução com rapidez e segurança.',margin+6,43);
+        }else{
+            doc.setDrawColor(205,216,228);doc.line(margin,24,pageWidth-margin,24);
+            doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(11,58,110);
+            doc.text(`BORDEREAU DE PEDIDO · ${lastSubmission.protocol||''}`,margin,31);
+        }
+        doc.setDrawColor(205,216,228);doc.line(margin,pageHeight-9,pageWidth-margin,pageHeight-9);
+        doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(75,86,99);
+        doc.text('CartaRumo · Acompanhamento do pedido',margin,pageHeight-5);
+        doc.text(`Página ${pageNumber}`,pageWidth-margin,pageHeight-5,{align:'right'});
+        const stripY=pageHeight-2.5,stripHeight=2.5,third=pageWidth/3;
+        doc.setFillColor(0,120,70);doc.rect(0,stripY,third,stripHeight,'F');
+        doc.setFillColor(210,25,45);doc.rect(third,stripY,third,stripHeight,'F');
+        doc.setFillColor(255,190,0);doc.rect(third*2,stripY,pageWidth-third*2,stripHeight,'F');
+    };
+    const newPage=()=>{doc.addPage();drawPage(doc.internal.getNumberOfPages());return 40};
+    drawPage(1);
+    let y=58;
+    const section=(title)=>{
+        if(y+13>bodyBottom)y=newPage();
+        doc.setFillColor(11,58,110);doc.roundedRect(margin,y,pageWidth-margin*2,9,1.5,1.5,'F');
+        doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(255,255,255);
+        doc.text(title.toLocaleUpperCase('pt-PT'),margin+4,y+6.1);
+        y+=12;
+    };
+    const addRow=([label,value],index)=>{
+        const text=String(value??'').trim()||'—';
+        doc.setFont('helvetica','normal');doc.setFontSize(10.5);
+        const valueLines=doc.splitTextToSize(text,pageWidth-margin*2-67);
+        const rowHeight=Math.max(12,valueLines.length*5+6);
+        if(y+rowHeight>bodyBottom)y=newPage();
+        doc.setFillColor(index%2===0?248:255,index%2===0?250:255,index%2===0?252:255);
+        doc.setDrawColor(220,227,235);doc.rect(margin,y,pageWidth-margin*2,rowHeight,'FD');
+        doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(60,75,91);
+        doc.text(String(label),margin+4,y+7.3);
+        doc.setFont('helvetica','normal');doc.setFontSize(10.5);doc.setTextColor(27,39,52);
+        doc.text(valueLines,margin+63,y+7.3);
+        y+=rowHeight;
+    };
+    const labelNames={data_nascimento:'Data de nascimento',nacionalidade:'Nacionalidade',nif:'NIF',documento:'Documento de identificação',numero_documento:'Número do documento',data_emissao:'Data de emissão',data_validade:'Data de validade',naturalidade:'Local de nascimento',pais:'País',cidade:'Ville',localidade:'Ville',codigo_postal:'Código postal',morada:'Morada',categoria:'Categoria pretendida',tipo_diligencia:'Tipo de diligência',formula:'Fórmula escolhida',horario:'Horário preferencial',observacoes:'Observações',documentos:'Documentos transmitidos',documentos_transmitidos:'Documentos transmitidos',email:'E-mail',telemovel:'Telemóvel',contacto:'Contacto'};
+    const extraRows=[];
+    const skipKeys=new Set(['nome','apelido','email','cidade','localidade','ville','protocol','protocol_number','path','size','mime_type']);
+    const flatten=(value,prefix='')=>{
+        if(Array.isArray(value)){value.forEach(item=>{if(typeof item==='string')extraRows.push([prefix||'Documentos transmitidos',item]);else if(item&&typeof item==='object')flatten(item,prefix)});return}
+        if(value&&typeof value==='object'){
+            Object.entries(value).forEach(([key,item])=>{
+                if(key==='documents_storage'){
+                    const names=(item||[]).map(file=>file?.name).filter(Boolean);
+                    if(names.length)extraRows.push(['Documentos transmitidos',names.join(', ')]);
+                    return;
+                }
+                if(skipKeys.has(key.toLowerCase()))return;
+                const label=labelNames[key]||key.replaceAll('_',' ').replace(/\b\w/g,letter=>letter.toLocaleUpperCase('pt-PT'));
+                if(Array.isArray(item))flatten(item,label);
+                else if(item&&typeof item==='object')flatten(item);
+                else if(item!==null&&item!==undefined&&String(item).trim()!=='')extraRows.push([label,String(item)]);
+            });
+        }else if(value!==null&&value!==undefined&&String(value).trim()!=='')extraRows.push([prefix||'Informação',String(value)]);
+    };
+    let info={};
+    try{info=typeof lastSubmission.info==='string'?JSON.parse(lastSubmission.info||'{}'):(lastSubmission.info||{})}
+    catch{if(lastSubmission.info)extraRows.push(['Detalhes do pedido',lastSubmission.info])}
+    if(info&&typeof info==='object')flatten(info);
+
+    section('Identificação do pedido');
+    [
+        ['Número do pedido',lastSubmission.protocol],
+        ['Data e hora', [lastSubmission.date,lastSubmission.time].filter(Boolean).join(' · ')],
+        ['Estado',lastSubmission.status],
+        ['Serviço',lastSubmission.service||lastSubmission.type],
+        ['Nome do requerente',lastSubmission.nom],
+        ['E-mail',lastSubmission.email],
+        ['Contacto',lastSubmission.contact],
+        ['Ville',lastSubmission.city]
+    ].forEach(addRow);
+    if(extraRows.length){section('Informações da diligência');extraRows.forEach(addRow)}
+    section('Regras e condições');
+    [
+        'O requerente confirma que as informações fornecidas são exatas e completas.',
+        'Os dados pessoais são tratados para acompanhamento e processamento do pedido, de acordo com a política de privacidade.',
+        'Todos os custos, taxas e encargos exigidos no âmbito deste procedimento são da responsabilidade do requerente.'
+    ].forEach((text,index)=>addRow([`Condição ${index+1}`,text],index));
+
+    doc.save(`CartaRumo_${lastSubmission.protocol||'pedido'}.pdf`);
 }
 
 function printReceipt(){
@@ -674,16 +812,34 @@ const diligenceTypes=[
     {id:'renovacao',name:'Renovação periódica',description:'Renove a sua carta de condução.'},
     {id:'substituicao',name:'Substituição por extravio',description:'Peça uma nova carta em caso de perda ou extravio.'}
 ];
+const countryCodes='AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW'.split(' ');
+const countryNames=new Intl.DisplayNames(['pt-PT'],{type:'region'});
+const nationalityNames={PT:'Portuguesa',BR:'Brasileira',AO:'Angolana',CV:'Cabo-verdiana',MZ:'Moçambicana',GW:'Guineense',ST:'São-tomense',ES:'Espanhola',FR:'Francesa',IT:'Italiana',DE:'Alemã',GB:'Britânica',US:'Americana',CA:'Canadiana',IN:'Indiana',CN:'Chinesa',UA:'Ucraniana',RU:'Russa',MA:'Marroquina',SN:'Senegalesa',NG:'Nigeriana',ZA:'Sul-africana',JP:'Japonesa',AU:'Australiana'};
+const citiesByCountry={PT:['Lisboa','Porto','Braga','Coimbra','Faro','Aveiro','Setúbal','Funchal','Ponta Delgada'],BR:['São Paulo','Rio de Janeiro','Brasília','Salvador','Belo Horizonte','Fortaleza','Recife','Curitiba'],AO:['Luanda','Huambo','Lobito','Benguela','Lubango'],CV:['Praia','Mindelo','Santa Maria','Assomada'],MZ:['Maputo','Matola','Beira','Nampula','Quelimane'],FR:['Paris','Marseille','Lyon','Toulouse','Nice'],ES:['Madrid','Barcelona','Valência','Sevilha','Málaga'],GB:['Londres','Manchester','Birmingham','Liverpool'],US:['Nova Iorque','Los Angeles','Chicago','Houston','Miami'],CA:['Toronto','Montreal','Vancouver','Ottawa'],DE:['Berlim','Hamburgo','Munique','Frankfurt'],IT:['Roma','Milão','Nápoles','Turim'],IN:['Nova Deli','Mumbai','Bangalore','Chennai'],CN:['Pequim','Xangai','Cantão','Shenzhen'],MA:['Casablanca','Rabat','Marraquexe','Tânger'],SN:['Dakar','Thiès','Saint-Louis']};
+function setupCountryFields(){
+    const sorted=countryCodes.map(code=>({code,name:countryNames.of(code)})).filter(item=>item.code!=='PT'&&item.name&&item.name!==item.code).sort((a,b)=>a.name.localeCompare(b.name,'pt-PT'));
+    ['aCountry','dCountry'].forEach(id=>{const select=$(id);if(!select)return;select.innerHTML='<option value="">Selecione o país</option>'+sorted.map(item=>`<option value="${item.code}">${esc(item.name)}</option>`).join('');select.insertAdjacentHTML('afterbegin','<option value="PT">Portugal</option>');select.value='PT';select.addEventListener('change',()=>updateCountryDependentFields(id[0].toLowerCase()))});
+    updateCountryDependentFields('a');updateCountryDependentFields('d');
+}
+function updateCountryDependentFields(prefix){
+    const country=$(prefix+'Country')?.value;if(!country)return;
+    const nationality=$(prefix+'Nationality');
+    const suggestedNationality=nationalityNames[country]||`Nacional de ${countryNames.of(country)}`;
+    if(nationality&&(!nationality.value||nationality.value===nationality.dataset.suggested)){nationality.value=suggestedNationality;nationality.dataset.suggested=suggestedNationality;}
+    const list=$(prefix==='a'?'aCitySuggestions':'dCitySuggestions');
+    if(list)list.innerHTML=(citiesByCountry[country]||[]).map(city=>`<option value="${esc(city)}">`).join('');
+}
 function buildApplicationMarkup(){
     $('enrollView').innerHTML=`<div class="form-shell"><div class="form-title"><div><button class="btn btn-ghost" onclick="showPersonalArea()">← Voltar à área pessoal</button><span class="eyebrow">Opção 1</span><h2>Inscrição – Aulas de Condução</h2><p>Preencha o pedido por etapas. Os seus dados são guardados como rascunho neste navegador.</p></div></div><div class="progress" id="enrollProgress"></div><form id="enrollForm" novalidate>
     <div class="step" data-step="1"><h3>Dados pessoais</h3><p class="step-intro">Indique os dados do candidato.</p><div class="fields">
       <div class="field"><label for="aName">Nome *</label><input id="aName" maxlength="100" autocomplete="given-name" required><span class="error"></span></div><div class="field"><label for="aSurname">Apelido *</label><input id="aSurname" maxlength="100" autocomplete="family-name" required><span class="error"></span></div>
-      <div class="field"><label for="aBirth">Data de nascimento *</label><input id="aBirth" type="date" required><span class="error"></span></div><div class="field"><label for="aNaturalidade">Naturalidade *</label><input id="aNaturalidade" required><span class="error"></span></div>
-      <div class="field"><label for="aNationality">Nacionalidade *</label><select id="aNationality" required><option value="">Selecione</option><option>Portuguesa</option><option>Brasileira</option><option>Cabo-verdiana</option><option>Angolana</option><option>Moçambicana</option><option>Guineense</option><option>São-tomense</option><option>Outra</option></select><span class="error"></span></div><div class="field hidden" id="aOtherNationalityWrap"><label for="aOtherNationality">Indique a nacionalidade *</label><input id="aOtherNationality"><span class="error"></span></div>
+      <div class="field"><label for="aBirth">Data de nascimento *</label><input id="aBirth" type="date" required><span class="error"></span></div><div class="field"><label for="aCountry">País *</label><select id="aCountry" required><option value="">Selecione o país</option></select><span class="error"></span></div>
+      <div class="field"><label for="aNationality">Nacionalidade *</label><input id="aNationality" maxlength="80" required><span class="error"></span></div><div class="field"><label for="aNaturalidade">Local de nascimento *</label><input id="aNaturalidade" maxlength="120" required><span class="error"></span></div>
       <div class="field"><label for="aNif">NIF *</label><input id="aNif" inputmode="numeric" maxlength="9" required><span class="error"></span></div><div class="field"><label for="aDocument">Documento de identificação *</label><select id="aDocument" required><option value="">Selecione</option><option>Cartão de Cidadão</option><option>Passaporte</option><option>Título de Residência</option><option>Outro</option></select><span class="error"></span></div>
-      <div class="field"><label for="aDocumentNumber">Número do documento *</label><input id="aDocumentNumber" maxlength="40" required><span class="error"></span></div><div class="field"><label for="aDocumentIssue">Data de emissão <span class="optional">(opcional)</span></label><input id="aDocumentIssue" type="date"></div><div class="field"><label for="aDocumentExpiry">Data de validade <span class="optional">(opcional)</span></label><input id="aDocumentExpiry" type="date"></div>
+      <div class="field"><label for="aDocumentNumber">Número do documento *</label><input id="aDocumentNumber" maxlength="40" required><span class="error"></span></div><div class="field"><label for="aDocumentIssue">Data de emissão *</label><input id="aDocumentIssue" type="date" required><span class="error"></span></div><div class="field"><label for="aDocumentExpiry">Data de validade *</label><input id="aDocumentExpiry" type="date" required><span class="error"></span></div>
     </div><div class="step-actions"><button type="button" class="btn btn-light" onclick="showPersonalArea()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextEnrollStep()">Seguinte →</button></div></div>
-    <div class="step" data-step="2"><h3>Morada e contactos</h3><div class="fields"><div class="field full"><label for="aAddress">Morada *</label><input id="aAddress" autocomplete="street-address" required><span class="error"></span></div><div class="field"><label for="aLocality">Localidade *</label><input id="aLocality" required><span class="error"></span></div><div class="field"><label for="aPostal">Código Postal *</label><input id="aPostal" placeholder="0000-000" maxlength="8" required><span class="error"></span></div><div class="field"><label for="aConcelho">Concelho</label><input id="aConcelho"></div><div class="field"><label for="aDistrict">Distrito</label><select id="aDistrict"><option value="">Selecione</option><option>Aveiro</option><option>Beja</option><option>Braga</option><option>Bragança</option><option>Castelo Branco</option><option>Coimbra</option><option>Évora</option><option>Faro</option><option>Guarda</option><option>Leiria</option><option>Lisboa</option><option>Portalegre</option><option>Porto</option><option>Santarém</option><option>Setúbal</option><option>Viana do Castelo</option><option>Vila Real</option><option>Viseu</option></select></div><div class="field"><label for="aCountry">País</label><input id="aCountry" value="Portugal"></div><div class="field"><label for="aEmail">E-mail *</label><input id="aEmail" type="email" autocomplete="email" required><span class="error"></span></div><div class="field"><label for="aPhone">Telemóvel *</label><input id="aPhone" type="tel" pattern="[+0-9][0-9 () .-]{7,29}" autocomplete="tel" required><span class="error"></span></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevEnrollStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextEnrollStep()">Seguinte →</button></div></div>
+    <div class="step" data-step="2"><h3>Contactos e localização</h3><div class="fields"><div class="field"><label for="aCity">Ville *</label><input id="aCity" list="aCitySuggestions" maxlength="120" required><datalist id="aCitySuggestions"></datalist><span class="error"></span></div><div class="field"><label for="aPostal">Código Postal</label><input id="aPostal" maxlength="20"></div><div class="field"><label for="aEmail">Endereço de e-mail *</label><input id="aEmail" type="email" maxlength="254" autocomplete="email" required><span class="error"></span></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevEnrollStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextEnrollStep()">Seguinte →</button></div></div>
+    <div class="step hidden" data-step="2-old"><h3>Morada e contactos</h3><div class="fields"><div class="field full"><label for="aAddress">Morada *</label><input id="aAddress" autocomplete="street-address" required><span class="error"></span></div><div class="field"><label for="aLocality">Localidade *</label><input id="aLocality" required><span class="error"></span></div><div class="field"><label for="aPostal">Código Postal *</label><input id="aPostal" placeholder="0000-000" maxlength="8" required><span class="error"></span></div><div class="field"><label for="aConcelho">Concelho</label><input id="aConcelho"></div><div class="field"><label for="aDistrict">Distrito</label><select id="aDistrict"><option value="">Selecione</option><option>Aveiro</option><option>Beja</option><option>Braga</option><option>Bragança</option><option>Castelo Branco</option><option>Coimbra</option><option>Évora</option><option>Faro</option><option>Guarda</option><option>Leiria</option><option>Lisboa</option><option>Portalegre</option><option>Porto</option><option>Santarém</option><option>Setúbal</option><option>Viana do Castelo</option><option>Vila Real</option><option>Viseu</option></select></div><div class="field"><label for="aCountry">País</label><input id="aCountry" value="Portugal"></div><div class="field"><label for="aEmail">E-mail *</label><input id="aEmail" type="email" autocomplete="email" required><span class="error"></span></div><div class="field"><label for="aPhone">Telemóvel *</label><input id="aPhone" type="tel" pattern="[+0-9][0-9 () .-]{7,29}" autocomplete="tel" required><span class="error"></span></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevEnrollStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextEnrollStep()">Seguinte →</button></div></div>
     <div class="step" data-step="3"><h3>Categoria / formação pretendida</h3><p class="step-intro">Selecione a categoria de condução pretendida.</p><div class="category-grid" id="enrollCategories"></div><span class="error" id="enrollCategoryError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevEnrollStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextEnrollStep()">Seguinte →</button></div></div>
     <div class="step" data-step="4"><h3>Documentos</h3><p class="step-intro">Anexe os documentos necessários. Selecione pelo menos um ficheiro.</p><div class="upload-grid" id="enrollUploads"></div><p class="step-intro">Formatos aceites: PDF, JPG, JPEG e PNG · Tamanho máximo: 10 MB por ficheiro</p><span class="error" id="enrollFileError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevEnrollStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextEnrollStep()">Seguinte →</button></div></div>
     <div class="step" data-step="5"><h3>Confirmação</h3><p class="step-intro">Reveja toda a informação antes de enviar a inscrição.</p><div class="summary-grid" id="enrollSummary"></div><label class="checkline"><input id="enrollConfirm" type="checkbox"><span>Confirmo que os dados introduzidos estão corretos.</span></label><span class="error" id="enrollConfirmError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevEnrollStep()">← Anterior</button><button type="button" class="btn btn-red" onclick="submitApplication('A')">Enviar inscrição</button></div></div>
@@ -691,7 +847,7 @@ function buildApplicationMarkup(){
     $('diligenceView').innerHTML=`<div class="form-shell"><div class="form-title"><div><button class="btn btn-ghost" onclick="showPersonalArea()">← Voltar à área pessoal</button><span class="eyebrow">Opção 2</span><h2>Diligências &amp; Carta de Condução</h2><p>Preencha o pedido por etapas.</p></div></div><div class="progress" id="diligenceProgress"></div><form id="diligenceForm" novalidate>
     <div class="step" data-step="1"><h3>Tipo de diligência</h3><p class="step-intro">Escolha o serviço pretendido.</p><div class="choice-grid" id="diligenceTypes"></div><span class="error" id="diligenceTypeError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="showPersonalArea()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextDiligenceStep()">Seguinte →</button></div></div>
     <div class="step" data-step="2"><h3>Categoria</h3><p class="step-intro">Selecione a categoria de condução.</p><div class="category-grid" id="diligenceCategories"></div><span class="error" id="diligenceCategoryError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevDiligenceStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextDiligenceStep()">Seguinte →</button></div></div>
-    <div class="step" data-step="3"><h3>Identificação do candidato</h3><div class="fields"><div class="field"><label for="dName">Nome *</label><input id="dName" required><span class="error"></span></div><div class="field"><label for="dSurname">Apelido *</label><input id="dSurname" required><span class="error"></span></div><div class="field"><label for="dBirth">Data de nascimento *</label><input id="dBirth" type="date" required><span class="error"></span></div><div class="field"><label for="dNationality">Nacionalidade *</label><input id="dNationality" required><span class="error"></span></div><div class="field"><label for="dNif">NIF *</label><input id="dNif" inputmode="numeric" maxlength="9" required><span class="error"></span></div><div class="field"><label for="dDocument">Documento de identificação *</label><select id="dDocument" required><option value="">Selecione</option><option>Cartão de Cidadão</option><option>Passaporte</option><option>Título de Residência</option><option>Outro</option></select><span class="error"></span></div><div class="field"><label for="dDocumentNumber">Número do documento *</label><input id="dDocumentNumber" required><span class="error"></span></div><div class="field"><label for="dDocumentIssue">Data de emissão <span class="optional">(opcional)</span></label><input id="dDocumentIssue" type="date"></div><div class="field"><label for="dNaturalidade">Naturalidade</label><input id="dNaturalidade"></div><div class="field full"><label for="dAddress">Morada *</label><input id="dAddress" required><span class="error"></span></div><div class="field"><label for="dLocality">Localidade *</label><input id="dLocality" required><span class="error"></span></div><div class="field"><label for="dPostal">Código Postal *</label><input id="dPostal" placeholder="0000-000" maxlength="8" required><span class="error"></span></div><div class="field"><label for="dEmail">E-mail *</label><input id="dEmail" type="email" required><span class="error"></span></div><div class="field"><label for="dPhone">Telemóvel *</label><input id="dPhone" type="tel" pattern="[+0-9][0-9 () .-]{7,29}" required><span class="error"></span></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevDiligenceStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextDiligenceStep()">Seguinte →</button></div></div>
+    <div class="step" data-step="3"><h3>Identificação do candidato</h3><div class="fields"><div class="field"><label for="dName">Nome *</label><input id="dName" required><span class="error"></span></div><div class="field"><label for="dSurname">Apelido *</label><input id="dSurname" required><span class="error"></span></div>      <div class="field"><label for="dBirth">Data de nascimento *</label><input id="dBirth" type="date" required><span class="error"></span></div><div class="field"><label for="dCountry">País *</label><select id="dCountry" required><option value="">Selecione o país</option></select><span class="error"></span></div><div class="field"><label for="dNationality">Nacionalidade *</label><input id="dNationality" maxlength="80" required><span class="error"></span></div><div class="field"><label for="dNaturalidade">Local de nascimento *</label><input id="dNaturalidade" maxlength="120" required><span class="error"></span></div><div class="field"><label for="dNif">NIF *</label><input id="dNif" inputmode="numeric" maxlength="9" required><span class="error"></span></div><div class="field"><label for="dDocument">Documento de identificação *</label><select id="dDocument" required><option value="">Selecione</option><option>Cartão de Cidadão</option><option>Passaporte</option><option>Título de Residência</option><option>Outro</option></select><span class="error"></span></div><div class="field"><label for="dDocumentNumber">Número do documento *</label><input id="dDocumentNumber" required><span class="error"></span></div><div class="field"><label for="dDocumentIssue">Data de emissão *</label><input id="dDocumentIssue" type="date" required><span class="error"></span></div><div class="field"><label for="dDocumentExpiry">Data de validade *</label><input id="dDocumentExpiry" type="date" required><span class="error"></span></div><div class="field"><label for="dEmail">E-mail *</label><input id="dEmail" type="email" required><span class="error"></span></div><div class="field"><label for="dLocality">Ville *</label><input id="dLocality" list="dCitySuggestions" maxlength="120" required><datalist id="dCitySuggestions"></datalist><span class="error"></span></div></div><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevDiligenceStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextDiligenceStep()">Seguinte →</button></div></div>
     <div class="step" data-step="4"><h3>Dados da diligência</h3><p class="step-intro" id="diligenceSpecificIntro"></p><div class="fields" id="diligenceSpecific"></div><h4>Documentos de apoio *</h4><p class="step-intro">Anexe pelo menos um documento. São aceites PDF, JPG, JPEG ou PNG · máximo 10 MB por ficheiro.</p><div class="upload-grid" id="diligenceUploads"></div><span class="error" id="diligenceFileError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevDiligenceStep()">← Anterior</button><button type="button" class="btn btn-primary" onclick="nextDiligenceStep()">Seguinte →</button></div></div>
     <div class="step" data-step="5"><h3>Confirmação</h3><p class="step-intro">Reveja todos os dados antes de enviar o pedido.</p><div class="summary-grid" id="diligenceSummary"></div><label class="checkline"><input id="diligenceConfirm" type="checkbox"><span>Confirmo que os dados introduzidos estão corretos.</span></label><span class="error" id="diligenceConfirmError"></span><div class="step-actions"><button type="button" class="btn btn-light" onclick="prevDiligenceStep()">← Anterior</button><button type="button" class="btn btn-red" onclick="submitApplication('B')">Enviar pedido</button></div></div>
     </form></div>`;
@@ -699,7 +855,6 @@ function buildApplicationMarkup(){
     $('successView').querySelector('h2').textContent='Pedido submetido com sucesso';
     $('successView').querySelector('p').textContent='O seu pedido foi registado com sucesso.';
     ['enrollForm','diligenceForm'].forEach(id=>$(id).querySelectorAll('input,select,textarea').forEach(input=>{const error=input.parentElement.querySelector('.error');if(error){error.id=input.id+'-error';error.setAttribute('aria-live','polite');input.setAttribute('aria-describedby',error.id)}}));
-    $('aNationality').onchange=()=>{$('aOtherNationalityWrap').classList.toggle('hidden',$('aNationality').value!=='Outra');$('aOtherNationality').required=$('aNationality').value==='Outra'};
     renderApplicationCards('A');renderApplicationCards('B');renderDocumentUploads('enroll','A');renderDocumentUploads('diligence','B');renderDiligenceFields();renderApplicationStep('A');renderApplicationStep('B');
 }
 function renderApplicationCards(type){
@@ -722,7 +877,7 @@ function renderDocumentUploads(prefix,type){
 function renderDiligenceFields(){
     const type=applicationState.B.type;
     const controls={
-      obtencao:`<div class="field"><label for="dCurrentDocument">Documento atual *</label><select id="dCurrentDocument" required><option value="">Selecione</option><option>Licença de Aprendizagem</option><option>Licença de Condução</option><option>Carta de Condução</option></select><span class="error"></span></div><div class="field"><label for="dIssuer">Emissor *</label><input id="dIssuer" required><span class="error"></span></div><div class="field full"><label for="dExamCenter">Centro de exames pretendido *</label><select id="dExamCenter" required><option value="">Selecione o centro</option><option>Centro de Exames 01</option><option>Centro de Exames 02</option><option>Centro de Exames 03</option><option>Centro de Exames 04</option></select><span class="error"></span></div>`,
+      obtencao:`<div class="field"><label for="dCurrentDocument">Documento atual *</label><select id="dCurrentDocument" required><option value="">Selecione</option><option>Licença de Aprendizagem</option><option>Licença de Condução</option><option>Carta de Condução</option></select><span class="error"></span></div>`,
       renovacao:`<div class="field"><label for="dLicenseNumber">Número da carta *</label><input id="dLicenseNumber" required><span class="error"></span></div><div class="field"><label for="dLicenseExpiry">Data de validade *</label><input id="dLicenseExpiry" type="date" required><span class="error"></span></div><div class="field full"><label for="dReason">Observações sobre a renovação <span class="optional">(opcional)</span></label><textarea id="dReason"></textarea></div>`,
       substituicao:`<div class="field"><label for="dLicenseNumber">Número da carta, se conhecido</label><input id="dLicenseNumber"></div><div class="field"><label for="dLossDate">Data do extravio <span class="optional">(opcional)</span></label><input id="dLossDate" type="date"></div><div class="field full"><label for="dLossLocation">Localidade onde ocorreu o extravio *</label><input id="dLossLocation" required><span class="error"></span></div><div class="field full"><label for="dReason">Informações adicionais <span class="optional">(opcional)</span></label><textarea id="dReason"></textarea></div>`
     };
@@ -732,7 +887,7 @@ function renderDiligenceFields(){
 }
 function appProgress(type){const labels=type==='A'?['Dados pessoais','Morada e contactos','Categoria / formação','Documentos','Confirmação']:['Tipo de diligência','Categoria','Identificação','Dados da diligência','Confirmação'];$((type==='A'?'enroll':'diligence')+'Progress').innerHTML=labels.map((label,index)=>`<div class="progress-step ${index+1<applicationState[type].step?'done':''} ${index+1===applicationState[type].step?'current':''}" data-number="${index+1}">${label}</div>`).join('')}
 function renderApplicationStep(type){const prefix=type==='A'?'enroll':'diligence';$(prefix+'View').querySelectorAll('.step').forEach(step=>step.classList.toggle('active',+step.dataset.step===applicationState[type].step));appProgress(type);if(applicationState[type].step===5)buildApplicationSummary(type)}
-function validApplicationStep(type){const prefix=type==='A'?'enroll':'diligence',step=$(prefix+'View').querySelector('.step.active');let valid=true;step.querySelectorAll('input:not([type="checkbox"]),select,textarea').forEach(input=>{if(!validateField(input)||!input.checkValidity())valid=false});if(type==='A'&&applicationState.A.step===3&&!applicationState.A.category){$('enrollCategoryError').textContent='Selecione uma categoria.';valid=false}if(type==='A'&&applicationState.A.step===4&&!Object.keys(applicationState.A.files).length){$('enrollFileError').textContent='Anexe pelo menos um documento.';valid=false}if(type==='B'&&applicationState.B.step===1&&!applicationState.B.type){$('diligenceTypeError').textContent='Selecione o tipo de diligência.';valid=false}if(type==='B'&&applicationState.B.step===2&&!applicationState.B.category){$('diligenceCategoryError').textContent='Selecione uma categoria.';valid=false}if(type==='B'&&applicationState.B.step===4&&!Object.keys(applicationState.B.files).length){$('diligenceFileError').textContent='Anexe pelo menos um documento para continuar.';valid=false}if(!valid){step.querySelector(':invalid, .invalid')?.focus()}return valid}
+function validApplicationStep(type){const prefix=type==='A'?'enroll':'diligence',step=$(prefix+'View').querySelector('.step.active');let valid=true;step.querySelectorAll('input:not([type="checkbox"]),select,textarea').forEach(input=>{if(!validateField(input)||!input.checkValidity())valid=false});if((type==='A'&&applicationState.A.step===1)||(type==='B'&&applicationState.B.step===3)){const formPrefix=type==='A'?'a':'d',issue=$(formPrefix+'DocumentIssue'),expiry=$(formPrefix+'DocumentExpiry');if(issue?.value&&expiry?.value&&expiry.value<=issue.value){expiry.parentElement.querySelector('.error').textContent='A data de validade deve ser posterior à data de emissão.';expiry.classList.add('invalid');valid=false}}if(type==='A'&&applicationState.A.step===3&&!applicationState.A.category){$('enrollCategoryError').textContent='Selecione uma categoria.';valid=false}if(type==='A'&&applicationState.A.step===4&&!Object.keys(applicationState.A.files).length){$('enrollFileError').textContent='Anexe pelo menos um documento.';valid=false}if(type==='B'&&applicationState.B.step===1&&!applicationState.B.type){$('diligenceTypeError').textContent='Selecione o tipo de diligência.';valid=false}if(type==='B'&&applicationState.B.step===2&&!applicationState.B.category){$('diligenceCategoryError').textContent='Selecione uma categoria.';valid=false}if(type==='B'&&applicationState.B.step===4&&!Object.keys(applicationState.B.files).length){$('diligenceFileError').textContent='Anexe pelo menos um documento para continuar.';valid=false}if(!valid){step.querySelector(':invalid, .invalid')?.focus()}return valid}
 function nextApplicationStep(type){if(!validApplicationStep(type))return;if(applicationState[type].step<5){applicationState[type].step++;renderApplicationStep(type);window.scrollTo(0,0)}}
 function prevApplicationStep(type){if(applicationState[type].step>1){applicationState[type].step--;renderApplicationStep(type);window.scrollTo(0,0)}}
 function nextEnrollStep(){nextApplicationStep('A')}function prevEnrollStep(){prevApplicationStep('A')}function nextDiligenceStep(){nextApplicationStep('B')}function prevDiligenceStep(){prevApplicationStep('B')}
@@ -741,18 +896,18 @@ function goApplicationStep(type,step){applicationState[type].step=step;renderApp
 function buildApplicationSummary(type){
     const files=Object.values(applicationState[type].files).map(file=>file.name).join(', ')||'Nenhum documento anexado';
     if(type==='A'){
-      const nationality=$('aNationality').value==='Outra'?val('aOtherNationality'):val('aNationality');
-      $('enrollSummary').innerHTML=summaryCard('Dados pessoais',[['Nome',val('aName')+' '+val('aSurname')],['Data de nascimento',val('aBirth')],['Naturalidade',val('aNaturalidade')],['Nacionalidade',nationality],['NIF',val('aNif')],['Documento',val('aDocument')+' · '+val('aDocumentNumber')],['Data de emissão',val('aDocumentIssue')],['Data de validade',val('aDocumentExpiry')]],1,'A')+summaryCard('Morada e contactos',[['Morada',val('aAddress')],['Localidade',val('aLocality')],['Código Postal',val('aPostal')],['Concelho',val('aConcelho')],['Distrito',val('aDistrict')],['País',val('aCountry')],['E-mail',val('aEmail')],['Telemóvel',val('aPhone')]],2,'A')+summaryCard('Categoria pretendida',[['Categoria',applicationState.A.category]],3,'A')+summaryCard('Documentos',[['Ficheiros',files]],4,'A');
+      const nationality=val('aNationality');
+      $('enrollSummary').innerHTML=summaryCard('Dados pessoais',[['Nome',val('aName')+' '+val('aSurname')],['Data de nascimento',val('aBirth')],['País',countryNames.of(val('aCountry'))],['Local de nascimento',val('aNaturalidade')],['Nacionalidade',nationality],['NIF',val('aNif')],['Documento',val('aDocument')+' · '+val('aDocumentNumber')],['Data de emissão',val('aDocumentIssue')],['Data de validade',val('aDocumentExpiry')]],1,'A')+summaryCard('Contactos e localização',[['Ville',val('aCity')],['Código Postal',val('aPostal')],['E-mail',val('aEmail')]],2,'A')+summaryCard('Categoria pretendida',[['Categoria',applicationState.A.category]],3,'A')+summaryCard('Documentos',[['Ficheiros',files]],4,'A');
     }else{
       const typeName=diligenceTypes.find(item=>item.id===applicationState.B.type)?.name||'';
-      const personal=[['Nome',val('dName')+' '+val('dSurname')],['Data de nascimento',val('dBirth')],['Nacionalidade',val('dNationality')],['NIF',val('dNif')],['Documento',val('dDocument')+' · '+val('dDocumentNumber')],['Data de emissão',val('dDocumentIssue')],['Naturalidade',val('dNaturalidade')]];
-      const contact=[['Morada',val('dAddress')],['Localidade',val('dLocality')],['Código Postal',val('dPostal')],['E-mail',val('dEmail')],['Telemóvel',val('dPhone')]];
+      const personal=[['Nome',val('dName')+' '+val('dSurname')],['Data de nascimento',val('dBirth')],['País',countryNames.of(val('dCountry'))],['Nacionalidade',val('dNationality')],['NIF',val('dNif')],['Documento',val('dDocument')+' · '+val('dDocumentNumber')],['Data de emissão',val('dDocumentIssue')],['Data de validade',val('dDocumentExpiry')],['Local de nascimento',val('dNaturalidade')]];
+      const contact=[['Ville',val('dLocality')],['E-mail',val('dEmail')]];
       const specific=[...$('diligenceSpecific').querySelectorAll('input,select,textarea')].map(input=>[input.labels?.[0]?.textContent.replace(' *','').replace(' (opcional)','')||input.id,input.value]);
       $('diligenceSummary').innerHTML=summaryCard('Identificação do candidato',personal,3,'B')+summaryCard('Contactos',contact,3,'B')+summaryCard('Tipo de diligência',[['Diligência',typeName]],1,'B')+summaryCard('Categoria',[['Categoria',applicationState.B.category]],2,'B')+summaryCard('Dados da diligência e documentos',[...specific,['Documentos transmitidos',files]],4,'B');
     }
 }
 function buildEnrollSummary(){buildApplicationSummary('A')}
-function applicationInfo(type){const fileNames=Object.values(applicationState[type].files).map(file=>file.name);if(type==='A')return JSON.stringify({dados_pessoais:{nome:val('aName'),apelido:val('aSurname'),data_nascimento:val('aBirth'),naturalidade:val('aNaturalidade'),nacionalidade:$('aNationality').value==='Outra'?val('aOtherNationality'):val('aNationality'),nif:val('aNif'),documento:val('aDocument'),numero_documento:val('aDocumentNumber'),data_emissao:val('aDocumentIssue'),data_validade:val('aDocumentExpiry')},morada_contactos:{morada:val('aAddress'),localidade:val('aLocality'),codigo_postal:val('aPostal'),concelho:val('aConcelho'),distrito:val('aDistrict'),pais:val('aCountry'),email:val('aEmail'),telemovel:val('aPhone')},categoria:applicationState.A.category,documentos:fileNames});const specific={};$('diligenceSpecific').querySelectorAll('input,select,textarea').forEach(input=>specific[input.labels?.[0]?.textContent.replace(' *','').replace(' (opcional)','')||input.id]=input.value);return JSON.stringify({tipo_diligencia:diligenceTypes.find(item=>item.id===applicationState.B.type)?.name,categoria:applicationState.B.category,dados_pessoais:{nome:val('dName'),apelido:val('dSurname'),data_nascimento:val('dBirth'),nacionalidade:val('dNationality'),nif:val('dNif'),documento:val('dDocument'),numero_documento:val('dDocumentNumber'),data_emissao:val('dDocumentIssue'),naturalidade:val('dNaturalidade')},morada_contactos:{morada:val('dAddress'),localidade:val('dLocality'),codigo_postal:val('dPostal'),email:val('dEmail'),telemovel:val('dPhone')},dados_diligencia:specific,documentos:fileNames})}
+function applicationInfo(type){const fileNames=Object.values(applicationState[type].files).map(file=>file.name);if(type==='A')return JSON.stringify({dados_pessoais:{nome:val('aName'),apelido:val('aSurname'),data_nascimento:val('aBirth'),pais:countryNames.of(val('aCountry')),naturalidade:val('aNaturalidade'),nacionalidade:val('aNationality'),nif:val('aNif'),documento:val('aDocument'),numero_documento:val('aDocumentNumber'),data_emissao:val('aDocumentIssue'),data_validade:val('aDocumentExpiry')},contactos_localizacao:{cidade:val('aCity'),codigo_postal:val('aPostal'),email:val('aEmail')},categoria:applicationState.A.category,documentos:fileNames});const specific={};$('diligenceSpecific').querySelectorAll('input,select,textarea').forEach(input=>specific[input.labels?.[0]?.textContent.replace(' *','').replace(' (opcional)','')||input.id]=input.value);return JSON.stringify({tipo_diligencia:diligenceTypes.find(item=>item.id===applicationState.B.type)?.name,categoria:applicationState.B.category,dados_pessoais:{nome:val('dName'),apelido:val('dSurname'),data_nascimento:val('dBirth'),pais:countryNames.of(val('dCountry')),nacionalidade:val('dNationality'),nif:val('dNif'),documento:val('dDocument'),numero_documento:val('dDocumentNumber'),data_emissao:val('dDocumentIssue'),data_validade:val('dDocumentExpiry'),naturalidade:val('dNaturalidade')},contactos_localizacao:{cidade:val('dLocality'),email:val('dEmail')},dados_diligencia:specific,documentos:fileNames})}
 const REQUEST_FILES_BUCKET='request-documents';
 async function uploadApplicationFiles(type,protocol){
     const uploaded=[];
@@ -767,7 +922,7 @@ async function uploadApplicationFiles(type,protocol){
     }
     return uploaded;
 }
-function submitApplication(type){const error=$(type==='A'?'enrollConfirmError':'diligenceConfirmError'),check=$(type==='A'?'enrollConfirm':'diligenceConfirm');error.textContent='';if(!check.checked){error.textContent='Confirme que os dados introduzidos estão corretos.';return}if(!currentUser){openAuth();return}const isA=type==='A',name=isA?`${val('aName')} ${val('aSurname')}`:`${val('dName')} ${val('dSurname')}`;activeRequestType=type;pendingRequest={type:isA?'Inscrição – Aulas de Condução':`Diligências & Carta de Condução – ${diligenceTypes.find(item=>item.id===applicationState.B.type)?.name||''}`,nom:name.trim(),email:val(isA?'aEmail':'dEmail'),contact:val(isA?'aPhone':'dPhone'),city:val(isA?'aLocality':'dLocality'),service_type:isA?'Inscrição – Aulas de Condução':'Diligências & Carta de Condução',info:applicationInfo(type),ownerEmail:currentUser.email||''};confirmRequest()}
+function submitApplication(type){const error=$(type==='A'?'enrollConfirmError':'diligenceConfirmError'),check=$(type==='A'?'enrollConfirm':'diligenceConfirm');error.textContent='';if(!check.checked){error.textContent='Confirme que os dados introduzidos estão corretos.';return}if(!currentUser){openAuth();return}const isA=type==='A',name=isA?`${val('aName')} ${val('aSurname')}`:`${val('dName')} ${val('dSurname')}`;activeRequestType=type;const applicantEmail=val(isA?'aEmail':'dEmail');pendingRequest={type:isA?'Inscrição – Aulas de Condução':`Diligências & Carta de Condução – ${diligenceTypes.find(item=>item.id===applicationState.B.type)?.name||''}`,nom:name.trim(),email:applicantEmail,contact:applicantEmail,city:val(isA?'aCity':'dLocality'),service_type:isA?'Inscrição – Aulas de Condução':'Diligências & Carta de Condução',info:applicationInfo(type),ownerEmail:currentUser.email||''};confirmRequest()}
 let submittingApplication=false;
 async function confirmRequest(){
     if(!pendingRequest||!currentUser||submittingApplication)return;
@@ -775,8 +930,7 @@ async function confirmRequest(){
     const errorBox=$(activeRequestType==='A'?'enrollConfirmError':'diligenceConfirmError');
     errorBox.textContent='A enviar os documentos e a registar o pedido…';
     const now=new Date();
-    const randomPart=window.crypto?.randomUUID?window.crypto.randomUUID().replaceAll('-','').slice(0,9).toUpperCase():`${now.getTime().toString(36).toUpperCase().slice(-5)}${Math.random().toString(36).slice(2,6).toUpperCase()}`;
-    const protocol=`AUTO-${randomPart}`;
+    const protocol=`AUTO-${now.getFullYear()}-${String(Math.floor(100000+Math.random()*900000))}`;
     let uploadedFiles=[];
     try{
         uploadedFiles=await uploadApplicationFiles(activeRequestType,protocol);
@@ -784,8 +938,8 @@ async function confirmRequest(){
         if(!info||typeof info!=='object'||Array.isArray(info))info={details:info};
         info.documents_storage=uploadedFiles;
         const {data:savedRequest,error}=await supabaseClient.from('requests').insert([{
-            user_id:currentUser.id,protocol,type:pendingRequest.type,nom:pendingRequest.nom,email:pendingRequest.email,contact:pendingRequest.contact,city:pendingRequest.city,
-            service_type:pendingRequest.service_type,service:activeRequestType==='A'?'license':'exam',status:'Pedido recebido',info:JSON.stringify(info)
+            user_id:currentUser.id,protocol,date:now.toISOString(),type:pendingRequest.type,nom:pendingRequest.nom,email:pendingRequest.email,contact:pendingRequest.contact,city:pendingRequest.city,
+            service_type:pendingRequest.service_type,service:activeRequestType==='A'?'license':'exam',status:'Pedido recebido',owner_email:currentUser.email||pendingRequest.ownerEmail,info:JSON.stringify(info)
         }]).select('protocol,date,status,owner_email').single();
         if(error)throw error;
         try{localStorage.removeItem(draftKey(activeRequestType))}catch(storageError){console.warn('Não foi possível apagar o rascunho local:',storageError)}
@@ -795,12 +949,15 @@ async function confirmRequest(){
         hideViews();$('successView').classList.add('active');window.scrollTo(0,0);downloadReceipt();
     }catch(err){
         if(uploadedFiles.length){const {error:cleanupError}=await supabaseClient.storage.from(REQUEST_FILES_BUCKET).remove(uploadedFiles.map(item=>item.path));if(cleanupError)console.warn('Les fichiers téléversés n’ont pas pu être supprimés après l’échec:',cleanupError.message)}
-        errorBox.textContent='Não foi possível registar o pedido. Verifique a ligação, o bucket e as políticas de Storage. '+(err.message||'');
+        console.error('Falha ao submeter pedido:',err);
+        errorBox.textContent=err.code==='23514'?'A base de dados rejeitou os dados por uma regra de validação (requests_submission_validation). Confirme a definição dessa regra no Supabase. '+(err.message||''):'Não foi possível registar o pedido. Verifique a ligação e as políticas do bucket Storage. '+(err.message||'');
     }finally{submittingApplication=false}
 }
-async function openProcedure(flow){activeFlow=flow;applicationState[flow]={step:1,category:'',type:'',files:{}};restoreDraft(flow);pendingRequest=null;if(flow==='A'){$('aNationality').dispatchEvent(new Event('change'));renderApplicationCards('A');renderDocumentUploads('enroll','A')}else{renderApplicationCards('B');renderDocumentUploads('diligence','B');renderDiligenceFields()}renderApplicationStep(flow);hideViews();$(flow==='A'?'enrollView':'diligenceView').classList.add('active');window.scrollTo(0,0)}
+async function openProcedure(flow){activeFlow=flow;applicationState[flow]={step:1,category:'',type:'',files:{}};restoreDraft(flow);pendingRequest=null;const prefix=flow==='A'?'a':'d';const countryField=$(prefix+'Country');if(!countryField.value)countryField.value='PT';updateCountryDependentFields(prefix);if(flow==='A'){renderApplicationCards('A');renderDocumentUploads('enroll','A')}else{renderApplicationCards('B');renderDocumentUploads('diligence','B');renderDiligenceFields()}renderApplicationStep(flow);hideViews();$(flow==='A'?'enrollView':'diligenceView').classList.add('active');window.scrollTo(0,0)}
 function renderEnrollStep(){renderApplicationStep('A')}function buildEnrollSummary(){buildApplicationSummary('A')}
 buildApplicationMarkup();
+$('enrollView').querySelector('[data-step="2-old"]')?.remove();
+setupCountryFields();
 
 $('authForm').addEventListener('submit', handleAuth);
 $('enrollForm').addEventListener('submit',event=>{event.preventDefault();applicationState.A.step<5?nextApplicationStep('A'):submitApplication('A')});
